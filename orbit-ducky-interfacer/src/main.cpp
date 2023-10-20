@@ -1,21 +1,23 @@
 #include <Arduino.h>
 #include <Keyboard.h>
 
-// put function declarations here:
-int myFunction(int, int);
+#include <Wire.h>
 
 void setup()
 {
-  Serial.begin(115200);
-  while (!Serial)
-    ;
-  Keyboard.begin();
+  Wire.begin();       // join i2c bus (address optional for master)
+  Serial.begin(9600); // start serial for output
 }
 
 void loop()
 {
-  // if (Serial.available())
-  Keyboard.write('A'); // Serial.read()
-  delay(10);
-  Serial.write("Hi");
+  Wire.requestFrom(8, 6); // request 6 bytes from peripheral device #8
+
+  while (Wire.available())
+  {                       // peripheral may send less than requested
+    char c = Wire.read(); // receive a byte as character
+    Serial.print(c);      // print the character
+  }
+
+  delay(500);
 }
