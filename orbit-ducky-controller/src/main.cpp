@@ -190,7 +190,7 @@ String scripts()
   {
     Serial.println(file.name());
 
-    if (String(file.name()).equals("index.html"))
+    if (!String(file.name()).equals("index.html"))
     {
       scripts_json += string_format("{ \"name\":\"%s\",\"bytes\":%s },", String(file.name()), String(file.size()));
     }
