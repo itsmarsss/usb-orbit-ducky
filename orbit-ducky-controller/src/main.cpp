@@ -74,9 +74,9 @@ void setup()
               if (request->hasParam("file_name")) {
                 String file_name = request->getParam("file_name")->value();
 
-                if (newScript(file_name)) {
-                  request->send(200, "text/html", "200");
-                }
+                file_name.trim();
+
+                request->send(200, "text/html", newScript(file_name));
               }
               request->send(200, "text/html", "No 'file_name' provided."); });
 
@@ -85,9 +85,9 @@ void setup()
               if (request->hasParam("file_name")) {
                 String file_name = request->getParam("file_name")->value();
 
-                if(deleteScript(file_name)) {
-                  request->send(200, "text/html", "200");
-                }
+                file_name.trim();
+
+                request->send(200, "text/html", deleteScript(file_name));
               }
               request->send(200, "text/html", "No 'file_name' provided."); });
 
@@ -232,5 +232,5 @@ String deleteScript(String file_name)
     return "200";
   }
 
-  return "Error creating file '" + file_name + "'.";
+  return "Error deleting file '" + file_name + "'.";
 }
