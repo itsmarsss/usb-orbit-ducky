@@ -46,7 +46,7 @@
 
       <div id="new_script">
         <input id="new_script_input" maxlength="30" placeholder="/file name">
-        <button id="create_script" class="green" onclick="new_script()">CREATE</button>
+        <button id="create_script" class="green" onclick="newScript()">CREATE</button>
       </div>
     </div>
 
@@ -60,7 +60,7 @@
       </div>
       <textarea id="script_editor"></textarea>
       <div id="editor_control_actions">
-        <button class="green">SAVE</button>
+        <button class="green" onclick="saveScript()">SAVE</button>
         <button class="yellow">RUN</button>
         <button class="red">STOP</button>
       </div>
@@ -337,18 +337,19 @@
             <span class="script_value">${data.scripts[i].bytes}</span>
             <div class="script_value script_actions">
               <button class="red" onclick="deleteScript('${data.scripts[i].name}')">DELETE</button>
-              <button class="blue" onclick="editScript('${data.scripts[i].name}')">EDIT</button>
+              <button class="blue" onclick="getScript('${data.scripts[i].name}')">EDIT</button>
               <button class="yellow">RUN</button>
             </div>
           </div>`;
     }
   }
 
-  function new_script() {
+  function newScript() {
     fetch('/api/new_script?file_name=' + new_script_input.value)
       .then(res => res.text())
       .then(out => {
         if (out == '200') {
+          new_script_input.value = "";
           getScripts();
         } else {
           alert(out);
@@ -378,11 +379,28 @@
       });
   }
 
-  function editScript(file_name) {
+  function getScript(file_name) {
     fetch('/api/get_script?file_name=' + file_name)
       .then(res => res.text())
       .then(out => {
+        script_name_input.value = file_name;
         script_editor.value = out;
+      })
+      .catch(err => {
+        console.log('Error querying json');
+        alert('Error editing script... Please reload:' + err);
+        throw err;
+      });
+  }
+
+  function saveScript() {
+    title.innerHTML = '/api/save_script?file_name=' + script_name_input.value + '&script=' + btoa(script_editor.value);
+    fetch('/api/save_script?file_name=' + script_name_input.value + '&script=' + btoa(script_editor.value))
+      .then(res => res.text())
+      .then(out => {
+        if (out != '200') {
+          alert(out);
+        }
       })
       .catch(err => {
         console.log('Error querying json');

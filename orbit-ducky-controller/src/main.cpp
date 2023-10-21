@@ -8,6 +8,7 @@
 
 #include "wifi_credentials.h"
 #include "string_format.h"
+#include "base64.hpp"
 
 #include <list>
 
@@ -17,6 +18,7 @@ std::string scripts();
 String newScript(String);
 String deleteScript(String);
 String getScript(String);
+String saveScript(String, String);
 
 AsyncWebServer server(80);
 
@@ -76,6 +78,8 @@ void setup()
                 String file_name = request->getParam("file_name")->value();
 
                 file_name.trim();
+                file_name.replace("/", "");
+                file_name.replace("\\", "");
 
                 request->send(200, "text/html", newScript(file_name));
               }
@@ -86,8 +90,6 @@ void setup()
               if (request->hasParam("file_name")) {
                 String file_name = request->getParam("file_name")->value();
 
-                file_name.trim();
-
                 request->send(200, "text/html", deleteScript(file_name));
               }
               request->send(200, "text/html", "No 'file_name' provided."); });
@@ -97,9 +99,35 @@ void setup()
               if (request->hasParam("file_name")) {
                 String file_name = request->getParam("file_name")->value();
 
-                file_name.trim();
-
                 request->send(200, "text/html", getScript(file_name));
+              }
+              request->send(200, "text/html", "No 'file_name' provided."); });
+
+  server.on("/api/save_script", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+              Serial.println("tes");
+              if (request->hasParam("file_name"))
+              {
+                String file_name = request->getParam("file_name")->value();
+
+                if (request->hasParam("script"))
+                {
+                  String script = request->getParam("script")->value();
+                  u_int8_t len = script.length() + 1;
+
+                  char script_array[len];
+                  script.toCharArray(script_array, len);
+
+                  unsigned char script_decoded[decode_base64_length((unsigned char *)script_array)];
+
+                  decode_base64((unsigned char *)script_array, script_decoded);
+
+                  Serial.println((char *)script_decoded);
+
+                  request->send(200, "text/html", saveScript(file_name, script));
+                }
+
+                request->send(200, "text/html", "No 'script' provided.");
               }
               request->send(200, "text/html", "No 'file_name' provided."); });
 
@@ -261,4 +289,24 @@ String getScript(String file_name)
   file.close();
 
   return content;
+}
+
+String saveScript(String file_name, String script)
+{
+  String checkStat = file_nameChecker(file_name);
+  if (!checkStat.equals("200"))
+  {
+    return checkStat;
+  }
+
+  if (!SPIFFS.exists("/" + file_name))
+  {
+    return "File with name '" + file_name + "' doesn't exists.";
+  }
+
+  File file = SPIFFS.open("/" + file_name, FILE_WRITE);
+  file.print(script);
+  file.close();
+
+  return "200";
 }
