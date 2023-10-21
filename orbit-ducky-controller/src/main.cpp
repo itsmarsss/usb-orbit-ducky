@@ -20,6 +20,7 @@ String newScript(String);
 String deleteScript(String);
 String getScript(String);
 String saveScript(String, String);
+String runScript(String);
 
 AsyncWebServer server(80);
 
@@ -125,6 +126,41 @@ void setup()
 
               String script = request->getParam("script")->value();
               request->send(200, "text/html", saveScript(file_name, hexToString(script))); });
+
+  server.on("/api/run_script", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+            if (request->hasParam("file_name"))
+            {
+              String file_name = request->getParam("file_name")->value();
+
+              request->send(200, "text/html", runScript(file_name));
+            }
+            request->send(200, "text/html", "No 'file_name' provided."); });
+
+  server.on("/api/download_script", HTTP_GET, [](AsyncWebServerRequest *request)
+            { 
+            if (!(request->hasParam("file_name"))) {
+              request->send(200, "text/html", "No 'file_name' provided.");
+              return;
+            }
+
+            String file_name = request->getParam("file_name")->value();
+
+            if (!SPIFFS.exists("/" + file_name))
+            {
+              request->send(200, "text/html", "File with name '" + file_name + "' doesn't exists.");
+              return;
+            }
+
+            File download = SPIFFS.open("/" + file_name, FILE_READ);
+
+            AsyncWebServerResponse *response = request->beginResponse(200, "text/html", download.readString());
+            
+            response->addHeader("Content-Type", "text/text");
+            response->addHeader("Content-Disposition", "attachment; filename=" + file_name + ".ods");
+            download.close();
+
+            request->send(response); });
 
   server.begin();
 
@@ -311,6 +347,27 @@ String saveScript(String file_name, String script)
   File file = SPIFFS.open("/" + file_name, FILE_WRITE);
   file.print(script);
   file.close();
+
+  return "200";
+}
+
+String runScript(String file_name)
+{
+  String checkStat = file_nameChecker(file_name);
+  if (!checkStat.equals("200"))
+  {
+    return checkStat;
+  }
+
+  if (!SPIFFS.exists("/" + file_name))
+  {
+    return "File with name '" + file_name + "' doesn't exists.";
+  }
+
+  /*
+  Run Script
+    - Append to 'decimalStream'
+  */
 
   return "200";
 }

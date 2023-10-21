@@ -55,8 +55,7 @@
       <div id="editor_actions">
         <input id="script_name_input" maxlength="30" placeholder="file name">
         <button class="yellow">AUTORUN</button>
-        <button class="blue">DUPLICATE</button>
-        <button class="blue">DOWNLOAD</button>
+        <button class="blue" onclick="downloadScript()">DOWNLOAD</button>
       </div>
       <textarea id="script_editor"></textarea>
       <div id="editor_control_actions">
@@ -245,6 +244,10 @@
     font-weight: bold;
   }
 
+  .script_key {
+    height: 15px;
+  }
+
   .script_item {
     display: flex;
     border-bottom: 1px #626262 solid;
@@ -252,8 +255,13 @@
     padding-bottom: 10px;
   }
 
-  .script_key {
-    height: 15px;
+  .script_item>* {
+    width: 33.33%;
+    flex-grow: 0;
+    max-width: 150px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
   }
 
   .script_value {
@@ -263,14 +271,8 @@
   .script_actions {
     display: flex;
     gap: 5px;
-  }
-
-  .script_item>* {
-    width: 33.33%;
-    max-width: 150px;
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
+    flex-grow: 1;
+    max-width: unset;
   }
 
   #new_script {
@@ -346,7 +348,7 @@
             <div class="script_value script_actions">
               <button class="red" onclick="deleteScript('${data.scripts[i].name}')">DELETE</button>
               <button class="blue" onclick="getScript('${data.scripts[i].name}')">EDIT</button>
-              <button class="yellow">RUN</button>
+              <button class="yellow" onclick="runScript('${data.scripts[i].name}')">RUN</button>
             </div>
           </div>`;
     }
@@ -415,6 +417,26 @@
         alert('Error saving script... Please reload:' + err);
         throw err;
       });
+  }
+
+  function runScript(file_name) {
+    fetch('/api/run_script?file_name=' + file_name)
+      .then(res => res.text())
+      .then(out => {
+        if (out != '200') {
+          alert(out);
+        }
+      })
+      .catch(err => {
+        console.log('Error querying json');
+        alert('Error running script... Please reload:' + err);
+        throw err;
+      });
+  }
+
+  function downloadScript() {
+    window.open(
+      "./api/download_script?file_name=" + script_name_input.value);
   }
 
   getStatus();
