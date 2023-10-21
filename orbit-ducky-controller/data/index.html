@@ -58,7 +58,7 @@
         <button class="blue">DUPLICATE</button>
         <button class="blue">DOWNLOAD</button>
       </div>
-      <textarea></textarea>
+      <textarea id="script_editor"></textarea>
       <div id="editor_control_actions">
         <button class="green">SAVE</button>
         <button class="yellow">RUN</button>
@@ -337,7 +337,7 @@
             <span class="script_value">${data.scripts[i].bytes}</span>
             <div class="script_value script_actions">
               <button class="red" onclick="deleteScript('${data.scripts[i].name}')">DELETE</button>
-              <button class="blue">EDIT</button>
+              <button class="blue" onclick="editScript('${data.scripts[i].name}')">EDIT</button>
               <button class="yellow">RUN</button>
             </div>
           </div>`;
@@ -373,7 +373,20 @@
       })
       .catch(err => {
         console.log('Error querying json');
-        alert('Error delete script... Please reload:' + err);
+        alert('Error deleting script... Please reload:' + err);
+        throw err;
+      });
+  }
+
+  function editScript(file_name) {
+    fetch('/api/get_script?file_name=' + file_name)
+      .then(res => res.text())
+      .then(out => {
+        script_editor.value = out;
+      })
+      .catch(err => {
+        console.log('Error querying json');
+        alert('Error editing script... Please reload:' + err);
         throw err;
       });
   }
