@@ -13,8 +13,9 @@
 
 void requestEvent();
 String hexToString(String);
-std::string spiffsInfo();
-std::string scripts();
+
+String spiffsInfo();
+String scripts();
 String newScript(String);
 String deleteScript(String);
 String getScript(String);
@@ -67,10 +68,10 @@ void setup()
             { request->send(SPIFFS, "/index.html", String(), false); });
 
   server.on("/api/status", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(200, "text/html", spiffsInfo().c_str()); });
+            { request->send(200, "text/html", spiffsInfo()); });
 
   server.on("/api/scripts", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(200, "text/html", scripts().c_str()); });
+            { request->send(200, "text/html", scripts()); });
 
   server.on("/api/new_script", HTTP_GET, [](AsyncWebServerRequest *request)
             { 
@@ -105,21 +106,25 @@ void setup()
 
   server.on("/api/save_script", HTTP_GET, [](AsyncWebServerRequest *request)
             {
-              Serial.println("tes");
-              if (request->hasParam("file_name"))
+              if (!(request->hasParam("file_name")))
               {
-                String file_name = request->getParam("file_name")->value();
-
-                if (request->hasParam("script"))
-                {
-                  String script = request->getParam("script")->value();
-
-                  request->send(200, "text/html", saveScript(file_name, hexToString(script)));
-                }
-
-                request->send(200, "text/html", "No 'script' provided.");
+                request->send(200, "text/html", "No 'file_name' provided.");
+                return;
               }
-              request->send(200, "text/html", "No 'file_name' provided."); });
+              if (!(request->hasParam("script")))
+              {
+                request->send(200, "text/html", "No 'script' provided.");
+                return;
+              }
+
+              String file_name = request->getParam("file_name")->value();
+
+              file_name.trim();
+              file_name.replace("/", "");
+              file_name.replace("\\", "");
+
+              String script = request->getParam("script")->value();
+              request->send(200, "text/html", saveScript(file_name, hexToString(script))); });
 
   server.begin();
 
@@ -158,7 +163,7 @@ String hexToString(String hex)
   return str;
 }
 
-std::string spiffsInfo()
+String spiffsInfo()
 {
   uint32_t program_size = ESP.getSketchSize();
 
@@ -170,10 +175,10 @@ std::string spiffsInfo()
 
   u_int8_t promicro_online = (millis() - last_req) >= 500 ? 0 : 1;
 
-  return string_format("{ \"file_system_size\":%u,\"file_system_used\":%u,\"atmega32U4\":%i }", file_system_size, file_system_used, promicro_online);
+  return string_format("{ \"file_system_size\":%u,\"file_system_used\":%u,\"atmega32U4\":%i }", file_system_size, file_system_used, promicro_online).c_str();
 }
 
-std::string scripts()
+String scripts()
 {
   File root = SPIFFS.open("/");
 
@@ -185,7 +190,7 @@ std::string scripts()
   {
     Serial.println(file.name());
 
-    // if (strcmp(file.name(), "index.html") != 0)
+    if (String(file.name()).equals("index.html"))
     {
       scripts_json += string_format("{ \"name\":\"%s\",\"bytes\":%s },", String(file.name()), String(file.size()));
     }
@@ -197,7 +202,7 @@ std::string scripts()
     scripts_json.resize(scripts_json.size() - 1);
   }
 
-  return string_format("{ \"scripts\":[%s] } ", scripts_json.c_str());
+  return string_format("{ \"scripts\":[%s] } ", scripts_json.c_str()).c_str();
 }
 
 bool isBlank(const String &str)
@@ -301,11 +306,6 @@ String saveScript(String file_name, String script)
   if (!checkStat.equals("200"))
   {
     return checkStat;
-  }
-
-  if (!SPIFFS.exists("/" + file_name))
-  {
-    return "File with name '" + file_name + "' doesn't exists.";
   }
 
   File file = SPIFFS.open("/" + file_name, FILE_WRITE);
