@@ -10,7 +10,7 @@
 <body>
   <h1 id="title">USB Orbit Ducky</h1>
   <div id="tabs">
-    <div class="tab">WiFi Duck</div>
+    <div class="tab active">WiFi Duck</div>
     <div class="tab">Terminal</div>
     <div class="tab">Settings</div>
     <div class="tab">About</div>
@@ -20,10 +20,10 @@
     <div id="status" class="section">
       <div class="headers">Status</div>
       <div id="storage_status_row"><b>Storage</b>:
-        <span id="storage_bytes">100</span> bytes used (<span id="storage_percentage_free">1</span>%
+        <span id="storage_bytes">0</span> bytes used (<span id="storage_percentage_free">100</span>%
         used)
       </div>
-      <progress id="storage_progress" value="30" max="100"></progress>
+      <progress id="storage_progress" value="0" max="100"></progress>
       <div id="chip_status_row"><b>ATmega32U4</b>:
         <span id="chip_connectivity" class="chip green_back">online</span>
       </div>
@@ -83,6 +83,32 @@
     </div>
   </div>
 </body>
+
+<script>
+  fetch('/api/status')
+    .then(res => res.json())
+    .then(out => setStatus(out))
+    .catch(err => {
+      console.log('Error querying json');
+      alert('Error getting status... Please reload' + err);
+      throw err;
+    });
+
+  function setStatus(data) {
+    storage_bytes.innerHTML = data.file_system_used;
+    storage_percentage_free.innerHTML = (data.file_system_used / data.file_system_size).toFixed(2);
+    storage_progress.value = storage_percentage_free.innerHTML;
+
+    chip_connectivity.classList.remove("green_back");
+    chip_connectivity.classList.remove("red_back");
+    chip_connectivity.innerHTML = data.atmega32U4 == 0 ? "offline" : "online";
+    if (data.atmega32U4 == 0) {
+      chip_connectivity.classList.add("red_back");
+    } else {
+      chip_connectivity.classList.add("green_back");
+    }
+  }
+</script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Oswald&family=Poppins&display=swap');
@@ -164,6 +190,10 @@
     background: var(--success);
   }
 
+  .red_back {
+    background: var(--error);
+  }
+
   #title {
     width: 100%;
     text-align: center;
@@ -197,6 +227,10 @@
   .tab:hover {
     transform: scale(1.1);
     transition: 200ms;
+  }
+
+  .tab.active {
+    text-decoration: underline;
   }
 
   .section {

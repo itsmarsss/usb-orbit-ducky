@@ -7,11 +7,12 @@
 #include <SPIFFS.h>
 
 #include "wifi_credentials.h"
+#include "string_format.h"
 
 #include <list>
 
 void requestEvent();
-void spiffsInfo();
+std::string spiffsInfo();
 
 AsyncWebServer server(80);
 
@@ -24,6 +25,7 @@ IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
 
 std::list<byte> decimalStream;
+uint32_t last_req = millis();
 
 void setup()
 {
@@ -58,12 +60,13 @@ void setup()
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/index.html", String(), false); });
 
+  server.on("/api/status", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(200, "text/html", spiffsInfo().c_str()); });
+
   server.begin();
 
   Wire.begin(8);
   Wire.onRequest(requestEvent);
-
-  spiffsInfo();
 }
 
 void loop()
@@ -79,9 +82,11 @@ void requestEvent()
   decimalStream.pop_front();
 
   Wire.write(dataToSend, 2);
+
+  last_req = millis();
 }
 
-void spiffsInfo()
+std::string spiffsInfo()
 {
   uint32_t program_size = ESP.getSketchSize();
 
@@ -91,21 +96,25 @@ void spiffsInfo()
 
   uint32_t free_size = ESP.getFlashChipSize() - program_size - file_system_size + file_system_used;
 
-  Serial.println("Memory:");
-  Serial.print("\tProgram size: ");
-  Serial.print(program_size);
-  Serial.println(" bytes");
+  // Serial.println("Memory:");
+  // Serial.print("\tProgram size: ");
+  // Serial.print(program_size);
+  // Serial.println(" bytes");
 
-  Serial.print("File system size: ");
-  Serial.print(file_system_size);
-  Serial.println(" bytes");
+  // Serial.print("File system size: ");
+  // Serial.print(file_system_size);
+  // Serial.println(" bytes");
 
-  Serial.print("\tFile system used: ");
-  Serial.print(file_system_used);
-  Serial.println(" bytes");
+  // Serial.print("\tFile system used: ");
+  // Serial.print(file_system_used);
+  // Serial.println(" bytes");
 
-  Serial.print("\tFree space: ");
-  Serial.print(free_size);
-  Serial.println(" bytes");
-  Serial.println();
+  // Serial.print("\tFree space: ");
+  // Serial.print(free_size);
+  // Serial.println(" bytes");
+  // Serial.println();
+
+  u_int8_t promicro_online = (millis() - last_req) >= 500 ? 0 : 1;
+
+  return string_format("{ \"file_system_size\":%u,\"file_system_used\":%u,\"atmega32U4\":%i }", file_system_size, file_system_used, promicro_online);
 }
