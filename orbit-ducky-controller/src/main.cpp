@@ -8,11 +8,11 @@
 
 #include "wifi_credentials.h"
 #include "string_format.h"
-#include "base64.hpp"
 
 #include <list>
 
 void requestEvent();
+String hexToString(String);
 std::string spiffsInfo();
 std::string scripts();
 String newScript(String);
@@ -113,18 +113,8 @@ void setup()
                 if (request->hasParam("script"))
                 {
                   String script = request->getParam("script")->value();
-                  u_int8_t len = script.length() + 1;
 
-                  char script_array[len];
-                  script.toCharArray(script_array, len);
-
-                  unsigned char script_decoded[decode_base64_length((unsigned char *)script_array)];
-
-                  decode_base64((unsigned char *)script_array, script_decoded);
-
-                  Serial.println((char *)script_decoded);
-
-                  request->send(200, "text/html", saveScript(file_name, script));
+                  request->send(200, "text/html", saveScript(file_name, hexToString(script)));
                 }
 
                 request->send(200, "text/html", "No 'script' provided.");
@@ -152,6 +142,20 @@ void requestEvent()
   Wire.write(dataToSend, 2);
 
   last_req = millis();
+}
+
+String hexToString(String hex)
+{
+  String str = "";
+  for (int i = 0; i < hex.length(); i += 2)
+  {
+    String hexByte = hex.substring(i, i + 2);
+
+    byte value = (byte)strtol(hexByte.c_str(), NULL, 16);
+
+    str += char(value);
+  }
+  return str;
 }
 
 std::string spiffsInfo()

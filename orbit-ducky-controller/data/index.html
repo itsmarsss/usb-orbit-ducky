@@ -25,7 +25,7 @@
       </div>
       <progress id="storage_progress" value="0" max="100"></progress>
       <div id="chip_status_row"><b>ATmega32U4</b>:
-        <span id="chip_connectivity" class="chip green_back">online</span>
+        <span id="chip_connectivity" class="chip red_back">offline</span>
       </div>
     </div>
 
@@ -45,7 +45,7 @@
       </div>
 
       <div id="new_script">
-        <input id="new_script_input" maxlength="30" placeholder="/file name">
+        <input id="new_script_input" maxlength="30" placeholder="file name">
         <button id="create_script" class="green" onclick="newScript()">CREATE</button>
       </div>
     </div>
@@ -53,7 +53,7 @@
     <div id="editor" class="section">
       <div class="headers">Editor</div>
       <div id="editor_actions">
-        <input id="script_name_input" maxlength="30" placeholder="/file name">
+        <input id="script_name_input" maxlength="30" placeholder="file name">
         <button class="yellow">AUTORUN</button>
         <button class="blue">DUPLICATE</button>
         <button class="blue">DOWNLOAD</button>
@@ -291,6 +291,14 @@
 </style>
 
 <script>
+  function stringToHex(str) {
+    let hex = "";
+    for (let i = 0; i < str.length; i++) {
+      hex += str.charCodeAt(i).toString(16);
+    }
+    return hex;
+  }
+
   function getStatus() {
     fetch('/api/status')
       .then(res => res.json())
@@ -394,8 +402,7 @@
   }
 
   function saveScript() {
-    title.innerHTML = '/api/save_script?file_name=' + script_name_input.value + '&script=' + btoa(script_editor.value);
-    fetch('/api/save_script?file_name=' + script_name_input.value + '&script=' + btoa(script_editor.value))
+    fetch('/api/save_script?file_name=' + script_name_input.value + '&script=' + stringToHex(script_editor.value))
       .then(res => res.text())
       .then(out => {
         if (out != '200') {
@@ -404,7 +411,7 @@
       })
       .catch(err => {
         console.log('Error querying json');
-        alert('Error editing script... Please reload:' + err);
+        alert('Error saving script... Please reload:' + err);
         throw err;
       });
   }
