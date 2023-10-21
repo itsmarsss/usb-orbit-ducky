@@ -14,8 +14,8 @@
 void requestEvent();
 std::string spiffsInfo();
 std::string scripts();
-bool new_script(String);
-bool delete_script(String);
+String newScript(String);
+String deleteScript(String);
 
 AsyncWebServer server(80);
 
@@ -74,7 +74,7 @@ void setup()
               if (request->hasParam("file_name")) {
                 String file_name = request->getParam("file_name")->value();
 
-                if (new_script(file_name)) {
+                if (newScript(file_name)) {
                   request->send(200, "text/html", "200");
                 }
               }
@@ -85,7 +85,7 @@ void setup()
               if (request->hasParam("file_name")) {
                 String file_name = request->getParam("file_name")->value();
 
-                if(delete_script(file_name)) {
+                if(deleteScript(file_name)) {
                   request->send(200, "text/html", "200");
                 }
               }
@@ -170,42 +170,67 @@ bool isBlank(const String &str)
 
 bool isWhitespace(char c)
 {
-  return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
+  return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '/' || c == '\\');
 }
 
-bool new_script(String file_name)
+String file_nameChecker(String file_name, boolean dupeCheck)
 {
   if (isBlank(file_name))
   {
-    return false;
+    return "'file_name' cannot be blank.";
   }
 
-  File root = SPIFFS.open("/");
-
-  File file = root.openNextFile();
-
-  while (file)
+  if (file_name.length() > 30)
   {
-    if (strcmp(file.name(), file_name.c_str()) == 0)
+    return "'file_name' length cannot exceed 30 characters.";
+  }
+
+  if (dupeCheck)
+  {
+    File root = SPIFFS.open("/");
+
+    File file = root.openNextFile();
+
+    while (file)
     {
-      return false;
+      if (strcmp(file.name(), file_name.c_str()) == 0)
+      {
+        return "File with name '" + file_name + "' already exists.";
+      }
+      file = root.openNextFile();
     }
-    file = root.openNextFile();
+  }
+
+  return "200";
+}
+
+String newScript(String file_name)
+{
+  String checkStat = file_nameChecker(file_name, true);
+  if (!checkStat.equals("200"))
+  {
+    return checkStat;
   }
 
   File new_file = SPIFFS.open("/" + file_name, FILE_WRITE);
   new_file.print("COM This is a new Orbit Ducky Script file");
   new_file.close();
 
-  return true;
+  return "200";
 }
 
-bool delete_script(String file_name)
+String deleteScript(String file_name)
 {
-  if (isBlank(file_name))
+  String checkStat = file_nameChecker(file_name, false);
+  if (!checkStat.equals("200"))
   {
-    return false;
+    return checkStat;
   }
 
-  return SPIFFS.remove("/" + file_name);
+  if (SPIFFS.remove("/" + file_name))
+  {
+    return "200";
+  }
+
+  return "Error creating file '" + file_name + "'.";
 }
