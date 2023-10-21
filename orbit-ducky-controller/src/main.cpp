@@ -220,7 +220,7 @@ String scripts()
 
   File file = root.openNextFile();
 
-  std::string scripts_json;
+  String scripts_json;
 
   while (file)
   {
@@ -228,17 +228,17 @@ String scripts()
 
     if (!String(file.name()).equals("index.html"))
     {
-      scripts_json += string_format("{ \"name\":\"%s\",\"bytes\":%s },", String(file.name()), String(file.size()));
+      scripts_json += "{ \"name\":\"" + String(file.name()) + "\",\"bytes\":" + String(file.size()) + " },";
     }
     file = root.openNextFile();
   }
 
   if (scripts_json.length() != 0)
   {
-    scripts_json.resize(scripts_json.size() - 1);
+    scripts_json = scripts_json.substring(0, scripts_json.length() - 1);
   }
 
-  return string_format("{ \"scripts\":[%s] } ", scripts_json.c_str()).c_str();
+  return "{ \"scripts\":[" + scripts_json + "] }";
 }
 
 bool isBlank(const String &str)
