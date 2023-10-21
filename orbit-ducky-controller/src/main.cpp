@@ -13,6 +13,8 @@
 
 void requestEvent();
 std::string spiffsInfo();
+std::string scripts();
+bool new_script(String);
 
 AsyncWebServer server(80);
 
@@ -63,6 +65,18 @@ void setup()
   server.on("/api/status", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(200, "text/html", spiffsInfo().c_str()); });
 
+  server.on("/api/scripts", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(200, "text/html", scripts().c_str()); });
+
+  server.on("/api/new_script", HTTP_GET, [](AsyncWebServerRequest *request)
+            { 
+              if (request->hasParam("file_name")){
+                String file_name = request->getParam("file_name")->value();
+
+                new_script(file_name);
+              }
+              request->redirect("/"); });
+
   server.begin();
 
   Wire.begin(8);
@@ -96,25 +110,54 @@ std::string spiffsInfo()
 
   uint32_t free_size = ESP.getFlashChipSize() - program_size - file_system_size + file_system_used;
 
-  // Serial.println("Memory:");
-  // Serial.print("\tProgram size: ");
-  // Serial.print(program_size);
-  // Serial.println(" bytes");
-
-  // Serial.print("File system size: ");
-  // Serial.print(file_system_size);
-  // Serial.println(" bytes");
-
-  // Serial.print("\tFile system used: ");
-  // Serial.print(file_system_used);
-  // Serial.println(" bytes");
-
-  // Serial.print("\tFree space: ");
-  // Serial.print(free_size);
-  // Serial.println(" bytes");
-  // Serial.println();
-
   u_int8_t promicro_online = (millis() - last_req) >= 500 ? 0 : 1;
 
   return string_format("{ \"file_system_size\":%u,\"file_system_used\":%u,\"atmega32U4\":%i }", file_system_size, file_system_used, promicro_online);
+}
+
+std::string scripts()
+{
+  File root = SPIFFS.open("/");
+
+  File file = root.openNextFile();
+
+  std::string scripts_json;
+
+  while (file)
+  {
+    if (strcmp(file.name(), "index.html") != 0)
+    {
+      scripts_json += string_format("{ \"name\":\"%s\",\"bytes\":%s },", String(file.name()), String(file.size()));
+    }
+    file = root.openNextFile();
+  }
+
+  if (scripts_json.length() != 0)
+  {
+    scripts_json.resize(scripts_json.size() - 1);
+  }
+
+  return string_format("{ \"scripts\":[%s] } ", scripts_json.c_str());
+}
+
+bool new_script(String file_name)
+{
+  File root = SPIFFS.open("/");
+
+  File file = root.openNextFile();
+
+  while (file)
+  {
+    if (strcmp(file.name(), file_name.c_str()) == 0)
+    {
+      return false;
+    }
+    file = root.openNextFile();
+  }
+
+  File new_file = SPIFFS.open("/" + file_name, FILE_WRITE);
+  new_file.print("COM This is a new Orbit Ducky Script file");
+  new_file.close();
+
+  return true;
 }

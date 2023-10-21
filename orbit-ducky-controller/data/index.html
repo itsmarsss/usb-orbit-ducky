@@ -39,30 +39,16 @@
           <span class="script_key">Actions</span>
         </div>
 
-        <div id="scripts_list"></div>
-        <div class="script_item" data-id="name">
-          <span class="script_value">Rick Roll</span>
-          <span class="script_value">100</span>
-          <div class="script_value script_actions">
-            <button class="red">DELETE</button>
-            <button class="blue">EDIT</button>
-            <button class="yellow">RUN</button>
-          </div>
-        </div>
-        <div class="script_item" data-id="name">
-          <span class="script_value">New Wallpaper</span>
-          <span class="script_value">52</span>
-          <div class="script_value script_actions">
-            <button class="red">DELETE</button>
-            <button class="blue">EDIT</button>
-            <button class="yellow">RUN</button>
-          </div>
+        <div id="scripts_list">
+
         </div>
       </div>
 
       <div id="new_script">
-        <input id="new_script_input" placeholder="/file name">
-        <button id="create_script" class="green">CREATE</button>
+        <form action="/api/new_script">
+          <input id="new_script_input" name="file_name" placeholder="/file name">
+          <button id="create_script" class="green" type="submit">CREATE</button>
+        </form>
       </div>
     </div>
 
@@ -90,7 +76,16 @@
     .then(out => setStatus(out))
     .catch(err => {
       console.log('Error querying json');
-      alert('Error getting status... Please reload' + err);
+      alert('Error getting status... Please reload: ' + err);
+      throw err;
+    });
+
+  fetch('/api/scripts')
+    .then(res => res.json())
+    .then(out => setScripts(out))
+    .catch(err => {
+      console.log('Error querying json');
+      alert('Error getting scripts... Please reload:' + err);
       throw err;
     });
 
@@ -106,6 +101,22 @@
       chip_connectivity.classList.add("red_back");
     } else {
       chip_connectivity.classList.add("green_back");
+    }
+  }
+
+  function setScripts(data) {
+    scripts_list.innerHTML = "";
+    for (let i = 0; i < data.scripts.length; i++) {
+      scripts_list.innerHTML += `
+      <div class="script_item" data-id="${data.scripts[i].name}">
+            <span class="script_value">/${data.scripts[i].name}</span>
+            <span class="script_value">${data.scripts[i].bytes}</span>
+            <div class="script_value script_actions">
+              <button class="red">DELETE</button>
+              <button class="blue">EDIT</button>
+              <button class="yellow">RUN</button>
+            </div>
+          </div>`;
     }
   }
 </script>
