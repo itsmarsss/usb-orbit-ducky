@@ -8,6 +8,8 @@
 
 #include "wifi_credentials.h"
 
+#include <list>
+
 void requestEvent();
 
 AsyncWebServer server(80);
@@ -19,6 +21,8 @@ void notFound(AsyncWebServerRequest *request)
 IPAddress IP(192, 168, 1, 1);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
+
+std::list<byte> decimalStream;
 
 void setup()
 {
@@ -37,7 +41,7 @@ void setup()
   Serial.print("AP IP address: ");
   Serial.println(IP);
 
-  server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest *request)
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/index.html", String(), false); });
 
   server.begin();
@@ -53,5 +57,10 @@ void loop()
 
 void requestEvent()
 {
-  Wire.write("hello ");
+  decimalStream.push_back(65);
+
+  byte dataToSend[2] = {static_cast<byte>('w'), decimalStream.front()};
+  decimalStream.pop_front();
+
+  Wire.write(dataToSend, 2);
 }
