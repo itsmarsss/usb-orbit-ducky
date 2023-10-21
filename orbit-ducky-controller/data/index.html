@@ -4,11 +4,295 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>USB Orbit Ducky</title>
 </head>
 
 <body>
-  Hello
+  <h1 id="title">USB Orbit Ducky</h1>
+  <div id="tabs">
+    <div class="tab">WiFi Duck</div>
+    <div class="tab">Terminal</div>
+    <div class="tab">Settings</div>
+    <div class="tab">About</div>
+  </div>
+  <div id="content">
+
+    <div id="status" class="section">
+      <div class="headers">Status</div>
+      <div id="storage_status_row"><b>Storage</b>:
+        <span id="storage_bytes">100</span> bytes used (<span id="storage_percentage_free">1</span>%
+        used)
+      </div>
+      <progress id="storage_progress" value="30" max="100"></progress>
+      <div id="chip_status_row"><b>ATmega32U4</b>:
+        <span id="chip_connectivity" class="chip green_back">online</span>
+      </div>
+    </div>
+
+    <div id="scripts" class="section">
+      <div class="headers">Scripts</div>
+
+      <div id="scripts_container">
+        <div class="script_item" data-id="name">
+          <span class="script_key">File</span>
+          <span class="script_key">Bytes</span>
+          <span class="script_key">Actions</span>
+        </div>
+
+        <div id="scripts_list"></div>
+        <div class="script_item" data-id="name">
+          <span class="script_value">Rick Roll</span>
+          <span class="script_value">100</span>
+          <div class="script_value script_actions">
+            <button class="red">DELETE</button>
+            <button class="blue">EDIT</button>
+            <button class="yellow">RUN</button>
+          </div>
+        </div>
+        <div class="script_item" data-id="name">
+          <span class="script_value">New Wallpaper</span>
+          <span class="script_value">52</span>
+          <div class="script_value script_actions">
+            <button class="red">DELETE</button>
+            <button class="blue">EDIT</button>
+            <button class="yellow">RUN</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="new_script">
+        <input id="new_script_input" placeholder="/file name">
+        <button id="create_script" class="green">CREATE</button>
+      </div>
+    </div>
+
+    <div id="editor" class="section">
+      <div class="headers">Editor</div>
+      <div id="editor_actions">
+        <input id="new_script_input" placeholder="/file name">
+        <button class="yellow">AUTORUN</button>
+        <button class="blue">DUPLICATE</button>
+        <button class="blue">DOWNLOAD</button>
+      </div>
+      <textarea></textarea>
+      <div id="editor_control_actions">
+        <button class="green">SAVE</button>
+        <button class="yellow">RUN</button>
+        <button class="red">STOP</button>
+      </div>
+    </div>
+  </div>
 </body>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald&family=Poppins&display=swap');
+
+  :root {
+    --topbar: #1e1f22;
+    --background: #313338;
+    --header: #252627;
+
+    --text: #ffffff;
+    --accent: #ffcc00;
+    --success: #348200;
+    --error: #ff4400;
+    --action: #26a0da;
+  }
+
+  html {
+    font-family: sans-serif;
+    background: var(--background);
+    color: var(--text);
+  }
+
+  body {
+    margin: 0;
+  }
+
+  button,
+  input,
+  textarea {
+    background: var(--header);
+    color: white;
+    outline: none;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    letter-spacing: 1px;
+  }
+
+  button:hover,
+  input:hover,
+  textarea:hover {
+    box-shadow: 2px 2px 5px var(--background),
+      -2px -2px 5px var(--header);
+    transition: 200ms;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  input {
+    width: 125px;
+  }
+
+  textarea {
+    font-family: 'Courier New', Courier, monospace;
+    padding: 15px 15px;
+    height: 400px;
+    resize: vertical;
+  }
+
+  .red {
+    color: var(--error);
+  }
+
+  .blue {
+    color: var(--action);
+  }
+
+  .green {
+    color: var(--success);
+  }
+
+  .yellow {
+    color: var(--accent);
+  }
+
+  .green_back {
+    background: var(--success);
+  }
+
+  #title {
+    width: 100%;
+    text-align: center;
+  }
+
+  #content {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+  }
+
+  #tabs {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    height: 25px;
+    padding: 10px;
+    background: var(--topbar);
+  }
+
+  .tab {
+    font-size: 20px;
+    line-height: 25px;
+    cursor: pointer;
+  }
+
+  .tab:hover {
+    transform: scale(1.1);
+    transition: 200ms;
+  }
+
+  .section {
+    border-radius: 15px;
+    margin: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .headers {
+    border-radius: 5px;
+    padding: 5px 10px;
+    background: var(--header);
+    border-left: var(--accent) 5px solid;
+    font-size: 25px;
+    font-family: "Oswald", "Poppins";
+    letter-spacing: 5px;
+  }
+
+  #storage_progress {
+    width: 100%;
+    border: 0;
+    background: var(--header);
+    border-radius: 15px;
+  }
+
+  #storage_progress::-webkit-progress-value {
+    background: var(--action);
+    border-radius: 15px;
+  }
+
+  #storage_progress::-webkit-progress-bar {
+    border: 0;
+    background: var(--header);
+    border-radius: 15px;
+  }
+
+  #storage_progress::-moz-progress-bar {
+    border: 0;
+    background: var(--action);
+    border-radius: 15px;
+  }
+
+  #storage_status_row,
+  #chip_status_row {
+    margin-top: 10px;
+  }
+
+  .chip {
+    border-radius: 15px;
+    padding: 5px 10px;
+    color: var(--text);
+    font-weight: bold;
+  }
+
+  .script_item {
+    display: flex;
+    border-bottom: 1px #626262 solid;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .script_key {
+    height: 15px;
+  }
+
+  .script_value {
+    line-height: 35px;
+  }
+
+  .script_actions {
+    display: flex;
+    gap: 5px;
+  }
+
+  .script_item>* {
+    width: 33.33%;
+    max-width: 150px;
+  }
+
+  #new_script {
+    margin-top: 20px;
+  }
+
+  #editor_actions {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  #editor_control_actions {
+    display: flex;
+    gap: 5px;
+    justify-content: end;
+  }
+</style>
 
 </html>
