@@ -15,6 +15,7 @@ void requestEvent();
 std::string spiffsInfo();
 std::string scripts();
 bool new_script(String);
+bool delete_script(String);
 
 AsyncWebServer server(80);
 
@@ -70,12 +71,25 @@ void setup()
 
   server.on("/api/new_script", HTTP_GET, [](AsyncWebServerRequest *request)
             { 
-              if (request->hasParam("file_name")){
+              if (request->hasParam("file_name")) {
                 String file_name = request->getParam("file_name")->value();
 
-                new_script(file_name);
+                if (new_script(file_name)) {
+                  request->send(200, "text/html", "200");
+                }
               }
-              request->redirect("/"); });
+              request->send(200, "text/html", "No 'file_name' provided."); });
+
+  server.on("/api/delete_script", HTTP_GET, [](AsyncWebServerRequest *request)
+            { 
+              if (request->hasParam("file_name")) {
+                String file_name = request->getParam("file_name")->value();
+
+                if(delete_script(file_name)) {
+                  request->send(200, "text/html", "200");
+                }
+              }
+              request->send(200, "text/html", "No 'file_name' provided."); });
 
   server.begin();
 
@@ -125,7 +139,9 @@ std::string scripts()
 
   while (file)
   {
-    if (strcmp(file.name(), "index.html") != 0)
+    Serial.println(file.name());
+
+    // if (strcmp(file.name(), "index.html") != 0)
     {
       scripts_json += string_format("{ \"name\":\"%s\",\"bytes\":%s },", String(file.name()), String(file.size()));
     }
@@ -140,8 +156,30 @@ std::string scripts()
   return string_format("{ \"scripts\":[%s] } ", scripts_json.c_str());
 }
 
+bool isBlank(const String &str)
+{
+  for (char c : str)
+  {
+    if (!isWhitespace(c))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool isWhitespace(char c)
+{
+  return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
+}
+
 bool new_script(String file_name)
 {
+  if (isBlank(file_name))
+  {
+    return false;
+  }
+
   File root = SPIFFS.open("/");
 
   File file = root.openNextFile();
@@ -160,4 +198,14 @@ bool new_script(String file_name)
   new_file.close();
 
   return true;
+}
+
+bool delete_script(String file_name)
+{
+  if (isBlank(file_name))
+  {
+    return false;
+  }
+
+  return SPIFFS.remove("/" + file_name);
 }

@@ -45,17 +45,15 @@
       </div>
 
       <div id="new_script">
-        <form action="/api/new_script">
-          <input id="new_script_input" name="file_name" placeholder="/file name">
-          <button id="create_script" class="green" type="submit">CREATE</button>
-        </form>
+        <input id="new_script_input" placeholder="/file name">
+        <button id="create_script" class="green" onclick="new_script()">CREATE</button>
       </div>
     </div>
 
     <div id="editor" class="section">
       <div class="headers">Editor</div>
       <div id="editor_actions">
-        <input id="new_script_input" placeholder="/file name">
+        <input id="script_name_input" placeholder="/file name">
         <button class="yellow">AUTORUN</button>
         <button class="blue">DUPLICATE</button>
         <button class="blue">DOWNLOAD</button>
@@ -69,57 +67,6 @@
     </div>
   </div>
 </body>
-
-<script>
-  fetch('/api/status')
-    .then(res => res.json())
-    .then(out => setStatus(out))
-    .catch(err => {
-      console.log('Error querying json');
-      alert('Error getting status... Please reload: ' + err);
-      throw err;
-    });
-
-  fetch('/api/scripts')
-    .then(res => res.json())
-    .then(out => setScripts(out))
-    .catch(err => {
-      console.log('Error querying json');
-      alert('Error getting scripts... Please reload:' + err);
-      throw err;
-    });
-
-  function setStatus(data) {
-    storage_bytes.innerHTML = data.file_system_used;
-    storage_percentage_free.innerHTML = (data.file_system_used / data.file_system_size).toFixed(2);
-    storage_progress.value = storage_percentage_free.innerHTML;
-
-    chip_connectivity.classList.remove("green_back");
-    chip_connectivity.classList.remove("red_back");
-    chip_connectivity.innerHTML = data.atmega32U4 == 0 ? "offline" : "online";
-    if (data.atmega32U4 == 0) {
-      chip_connectivity.classList.add("red_back");
-    } else {
-      chip_connectivity.classList.add("green_back");
-    }
-  }
-
-  function setScripts(data) {
-    scripts_list.innerHTML = "";
-    for (let i = 0; i < data.scripts.length; i++) {
-      scripts_list.innerHTML += `
-      <div class="script_item" data-id="${data.scripts[i].name}">
-            <span class="script_value">/${data.scripts[i].name}</span>
-            <span class="script_value">${data.scripts[i].bytes}</span>
-            <div class="script_value script_actions">
-              <button class="red">DELETE</button>
-              <button class="blue">EDIT</button>
-              <button class="yellow">RUN</button>
-            </div>
-          </div>`;
-    }
-  }
-</script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Oswald&family=Poppins&display=swap');
@@ -342,5 +289,97 @@
     justify-content: end;
   }
 </style>
+
+<script>
+  function getStatus() {
+    fetch('/api/status')
+      .then(res => res.json())
+      .then(out => setStatus(out))
+      .catch(err => {
+        console.log('Error querying json');
+        alert('Error getting status... Please reload: ' + err);
+        throw err;
+      });
+  }
+
+  function setStatus(data) {
+    storage_bytes.innerHTML = data.file_system_used;
+    storage_percentage_free.innerHTML = (data.file_system_used / data.file_system_size).toFixed(2);
+    storage_progress.value = storage_percentage_free.innerHTML;
+
+    chip_connectivity.classList.remove("green_back");
+    chip_connectivity.classList.remove("red_back");
+    chip_connectivity.innerHTML = data.atmega32U4 == 0 ? "offline" : "online";
+    if (data.atmega32U4 == 0) {
+      chip_connectivity.classList.add("red_back");
+    } else {
+      chip_connectivity.classList.add("green_back");
+    }
+  }
+
+  function getScripts() {
+    fetch('/api/scripts')
+      .then(res => res.json())
+      .then(out => setScripts(out))
+      .catch(err => {
+        console.log('Error querying json');
+        alert('Error getting scripts... Please reload:' + err);
+        throw err;
+      });
+  }
+
+  function setScripts(data) {
+    scripts_list.innerHTML = "";
+    for (let i = 0; i < data.scripts.length; i++) {
+      scripts_list.innerHTML += `
+      <div class="script_item" id="${data.scripts[i].name}">
+            <span class="script_value">/${data.scripts[i].name}</span>
+            <span class="script_value">${data.scripts[i].bytes}</span>
+            <div class="script_value script_actions">
+              <button class="red" onclick="deleteScript('${data.scripts[i].name}')">DELETE</button>
+              <button class="blue">EDIT</button>
+              <button class="yellow">RUN</button>
+            </div>
+          </div>`;
+    }
+  }
+
+  function new_script() {
+    fetch('/api/new_script?file_name=' + new_script_input.value)
+      .then(res => res.text())
+      .then(out => {
+        if (out == '200') {
+          getScripts();
+        } else {
+          alert(out);
+        }
+      })
+      .catch(err => {
+        console.log('Error querying json');
+        alert('Error creating scripts... Please reload:' + err);
+        throw err;
+      });
+  }
+
+  function deleteScript(file_name) {
+    fetch('/api/delete_script?file_name=' + file_name)
+      .then(res => res.text())
+      .then(out => {
+        if (out == '200') {
+          document.getElementById(file_name).remove();
+        } else {
+          alert(out);
+        }
+      })
+      .catch(err => {
+        console.log('Error querying json');
+        alert('Error delete script... Please reload:' + err);
+        throw err;
+      });
+  }
+
+  getStatus();
+  getScripts();
+</script>
 
 </html>
