@@ -391,14 +391,18 @@
 
   function getScript(file_name) {
     fetch('/api/get_script?file_name=' + file_name)
-      .then(res => res.text())
+      .then(res => res.json())
       .then(out => {
-        script_name_input.value = file_name;
-        script_editor.value = out;
+        if (out.status == 200) {
+          script_name_input.value = file_name;
+          script_editor.value = out.content;
+        } else {
+          alert(out.content);
+        }
       })
       .catch(err => {
         console.log('Error querying json');
-        alert('Error editing script... Please reload:' + err);
+        alert('Error getting script... Please reload:' + err);
         throw err;
       });
   }

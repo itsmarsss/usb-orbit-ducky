@@ -205,6 +205,20 @@ String hexToString(String hex)
   return str;
 }
 
+String stringToHex(String str)
+{
+  String hex = "";
+  for (int i = 0; i < str.length(); i++)
+  {
+    char c = str.charAt(i);
+    byte value = (byte)c;
+    char hexChars[3];
+    snprintf(hexChars, 3, "%02X", value);
+    hex += hexChars;
+  }
+  return hex;
+}
+
 String spiffsInfo()
 {
   uint32_t program_size = ESP.getSketchSize();
@@ -327,19 +341,19 @@ String getScript(String file_name)
   String checkStat = file_nameChecker(file_name);
   if (!checkStat.equals("200"))
   {
-    return checkStat;
+    return "{ \"status\":404, \"content\":\"" + checkStat + "\" }";
   }
 
   if (!SPIFFS.exists("/" + file_name))
   {
-    return "File with name '" + file_name + "' doesn't exists.";
+    return "{ \"status\":404, \"content\":\"File with name '" + file_name + "' doesn't exists.\" }";
   }
 
   File file = SPIFFS.open("/" + file_name, FILE_READ);
   String content = file.readString();
   file.close();
 
-  return content;
+  return "{ \"status\":200, \"content\":\"" + content + "\" }";
 }
 
 String saveScript(String file_name, String script)
