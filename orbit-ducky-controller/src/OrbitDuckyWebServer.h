@@ -11,7 +11,7 @@ String scripts();
 String newScript(String);
 String deleteScript(String);
 String getScript(String);
-String saveScript(String, String);
+String saveScript(String, String, String);
 String runScript(String);
 
 String hexToString(String);
@@ -45,11 +45,6 @@ void setupEndPoints()
       String file_name = hexToString(request -> getParam("file_name") -> value());
 
       file_name.trim();
-
-      if (file_name.equals("/")) {
-        request -> send(200, "text/html", "Root file cannot be edited.");
-        return;
-      }
 
       request -> send(200, "text/html", newScript(file_name));
     }
@@ -88,13 +83,15 @@ void setupEndPoints()
 
     file_name.trim();
 
-    if (file_name.equals("/")) {
-      request -> send(200, "text/html", "Root file cannot be edited.");
-      return;
+    String new_file_name = file_name;
+
+    if (request -> hasParam("new_file_name")) {
+      new_file_name = hexToString(request -> getParam("new_file_name") -> value());
     }
 
     String script = hexToString(request -> getParam("script") -> value());
-    request -> send(200, "text/html", saveScript(file_name, script)); });
+
+    request -> send(200, "text/html", saveScript(file_name, new_file_name, script)); });
 
   server.on("/api/run_script", HTTP_GET, [](AsyncWebServerRequest *request)
             {

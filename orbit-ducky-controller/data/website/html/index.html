@@ -69,6 +69,8 @@
 </body>
 
 <script>
+  let currentEditing = "/";
+
   function stringToHex(input) {
     let hex = "";
     for (let i = 0; i < input.length; i++) {
@@ -179,6 +181,7 @@
       .then(res => res.json())
       .then(out => {
         if (out.status == '200') {
+          currentEditing = file_name;
           script_name_input.value = file_name;
           script_editor.value = hexToString(out.content);
         } else {
@@ -193,7 +196,12 @@
   }
 
   function saveScript() {
-    fetch('/api/save_script?file_name=' + stringToHex(script_name_input.value) + '&script=' + stringToHex(script_editor.value))
+    if (currentEditing == "/") {
+      alert("Edit a script first.");
+      return;
+    }
+
+    fetch('/api/save_script?file_name=' + stringToHex(currentEditing) + '&new_file_name=' + stringToHex(script_name_input.value) + '&script=' + stringToHex(script_editor.value))
       .then(res => res.text())
       .then(out => {
         if (out != '200') {

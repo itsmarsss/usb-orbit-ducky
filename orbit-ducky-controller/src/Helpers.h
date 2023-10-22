@@ -74,5 +74,10 @@ String file_nameChecker(String file_name)
         return "'file_name' length cannot exceed 30 characters.";
     }
 
+    if (file_name.equals("/"))
+    {
+        return "Root file cannot be edited.";
+    }
+
     return "200";
 }

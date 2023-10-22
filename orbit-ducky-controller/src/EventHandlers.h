@@ -115,15 +115,22 @@ String getScript(String file_name)
     return "{ \"status\":200, \"content\":\"" + stringToHex(content) + "\" }";
 }
 
-String saveScript(String file_name, String script)
+String saveScript(String file_name, String new_file_name, String script)
 {
-    String checkStat = file_nameChecker(file_name);
+    String checkStat = file_nameChecker(new_file_name);
     if (!checkStat.equals("200"))
     {
         return checkStat;
     }
 
-    File file = SPIFFS.open(file_name, FILE_WRITE);
+    if (SPIFFS.exists(new_file_name) && !file_name.equals(new_file_name))
+    {
+        return "File with path '" + new_file_name + "' already exists.";
+    }
+
+    SPIFFS.rename(file_name, new_file_name);
+
+    File file = SPIFFS.open(new_file_name, FILE_WRITE);
     file.print(script);
     file.close();
 
