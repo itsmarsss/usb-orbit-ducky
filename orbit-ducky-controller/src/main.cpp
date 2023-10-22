@@ -44,8 +44,6 @@ void requestEvent()
     return;
   }
 
-  byte dataToSend[2] = {static_cast<byte>('w'), decimalStream.front()};
+  Wire.write(decimalStream.front(), 2);
   decimalStream.pop_front();
-
-  Wire.write(dataToSend, 2);
 }

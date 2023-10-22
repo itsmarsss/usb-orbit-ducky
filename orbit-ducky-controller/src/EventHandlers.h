@@ -6,9 +6,10 @@
 #include <list>
 
 #include "Helpers.h"
+#include "ODSInterpreter.h"
 
 uint32_t last_req = millis();
-std::list<byte> decimalStream;
+std::list<byte *> decimalStream;
 
 String spiffsInfo()
 {
@@ -154,16 +155,31 @@ String runScript(String file_name)
     Run Script
       - Append to 'decimalStream'
     */
+
     File file = SPIFFS.open(file_name, FILE_READ);
-    String toType = file.readString();
+    String instruction = file.readString();
 
-    char toTypeArray[toType.length() + 1];
+    std::vector<String> lines; // Use a vector to dynamically store the lines
 
-    toType.toCharArray(toTypeArray, toType.length());
+    int startPos = 0; // Initialize the start position
 
-    for (char c : toType)
+    while (startPos < instruction.length())
     {
-        decimalStream.push_back((int)c);
+        int endPos = instruction.indexOf('\n', startPos); // Find the next newline character
+        if (endPos == -1)
+        {
+            endPos = instruction.length(); // If no more newline characters, use the end of the string
+        }
+        lines.push_back(instruction.substring(startPos, endPos)); // Store the line
+        startPos = endPos + 1;                                    // Update the start position for the next iteration
+    }
+
+    // Now, you have the lines stored in the "lines" vector.
+
+    // Print the lines for demonstration
+    for (size_t i = 0; i < lines.size(); i++)
+    {
+        Serial.println(lines[i]);
     }
 
     return "200";
