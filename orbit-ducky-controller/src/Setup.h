@@ -22,7 +22,7 @@ IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
 void setupAP()
 {
-    WiFi.softAP(ssid, password);
+    WiFi.softAP(ssid, password, 1, 1, 1, true);
     delay(500);
     WiFi.softAPConfig(IP, gateway, subnet);
     IPAddress IP = WiFi.softAPIP();

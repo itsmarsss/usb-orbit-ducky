@@ -1,3 +1,2 @@
-const char *ssid = "Wireless Controller";
-const char *password = "12345678";
-
+char *ssid = "USB Orbit Ducky";
+char *password = "12345678";
