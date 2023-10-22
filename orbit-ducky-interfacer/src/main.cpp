@@ -19,16 +19,21 @@ void loop()
 {
   Wire.requestFrom(8, 2);
 
-  if (Wire.available())
+  if (Wire.available() > 0)
   {
     /*
-    Byte #1     Value     Event         Short     Decimal
-                0         Write         w         119
-                1         Press         p         112
-                2         Release       r         114
-                3         ReleaseAll    l         108
+    Byte #1     Event         Short     Decimal
+                Null          0         0
+                Write         w         119
+                Press         p         112
+                Release       r         114
+                ReleaseAll    l         108
     */
     byte event = Wire.read();
+    if (event == 0)
+    {
+      return;
+    }
 
     /*
     Refer to https://www.arduino.cc/reference/en/language/functions/usb/keyboard/keyboardmodifiers/
@@ -36,8 +41,6 @@ void loop()
         - eg. 65 = 'A'
     */
     byte decimal = Wire.read();
-
-    Keyboard.write(decimal);
 
     // Debug
     Serial.print(static_cast<char>(event));
@@ -47,16 +50,16 @@ void loop()
 
     switch (event)
     {
-    case 0: // w
+    case 119: // w
       write(decimal);
       break;
-    case 1: // p
+    case 112: // p
       press(decimal);
       break;
-    case 2: // r
+    case 114: // r
       release(decimal);
       break;
-    case 3: // l
+    case 108: // l
       releaseAll();
       break;
     }
