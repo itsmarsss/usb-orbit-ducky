@@ -43,7 +43,7 @@ void setupEndPoints()
             {
     if (request->hasParam("file_name"))
     {
-      String file_name = request->getParam("file_name")->value();
+      String file_name = hexToString(request->getParam("file_name")->value());
 
       file_name.trim();
 
@@ -55,7 +55,7 @@ void setupEndPoints()
             {
     if (request->hasParam("file_name"))
     {
-      String file_name = request->getParam("file_name")->value();
+      String file_name = hexToString(request->getParam("file_name")->value());
 
       request->send(200, "text/html", deleteScript(file_name));
     }
@@ -65,7 +65,7 @@ void setupEndPoints()
             {
     if (request->hasParam("file_name"))
     {
-      String file_name = request->getParam("file_name")->value();
+      String file_name = hexToString(request->getParam("file_name")->value());
 
       request->send(200, "text/html", getScript(file_name));
     }
@@ -84,20 +84,18 @@ void setupEndPoints()
       return;
     }
 
-    String file_name = request->getParam("file_name")->value();
+    String file_name = hexToString(request->getParam("file_name")->value());
 
     file_name.trim();
-    file_name.replace("/", "");
-    file_name.replace("\\", "");
 
-    String script = request->getParam("script")->value();
-    request->send(200, "text/html", saveScript(file_name, hexToString(script))); });
+    String script = hexToString(request->getParam("script")->value());
+    request->send(200, "text/html", saveScript(file_name, script)); });
 
   server.on("/api/run_script", HTTP_GET, [](AsyncWebServerRequest *request)
             {
     if (request->hasParam("file_name"))
     {
-      String file_name = request->getParam("file_name")->value();
+      String file_name = hexToString(request->getParam("file_name")->value());
 
       request->send(200, "text/html", runScript(file_name));
     }
@@ -111,7 +109,7 @@ void setupEndPoints()
       return;
     }
 
-    String file_name = request->getParam("file_name")->value();
+    String file_name = hexToString(request->getParam("file_name")->value());
 
     if (!SPIFFS.exists("/" + file_name))
     {

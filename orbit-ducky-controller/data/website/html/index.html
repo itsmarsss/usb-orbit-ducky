@@ -46,7 +46,7 @@
       </div>
 
       <div id="new_script">
-        <input id="new_script_input" maxlength="30" placeholder="/file/path">
+        <input id="new_script_input" maxlength="31" placeholder="/file/path" value="/">
         <button id="create_script" class="green" onclick="newScript()">CREATE</button>
       </div>
     </div>
@@ -54,7 +54,7 @@
     <div id="editor" class="section">
       <div class="headers">Editor</div>
       <div id="editor_actions">
-        <input id="script_name_input" maxlength="30" placeholder="/file/path">
+        <input id="script_name_input" maxlength="31" placeholder="/file/path" value="/">
         <button class="yellow">AUTORUN</button>
         <button class="blue" onclick="downloadScript()">DOWNLOAD</button>
       </div>
@@ -140,11 +140,11 @@
   }
 
   function newScript() {
-    fetch('/api/new_script?file_name=' + new_script_input.value)
+    fetch('/api/new_script?file_name=' + stringToHex(new_script_input.value))
       .then(res => res.text())
       .then(out => {
         if (out == '200') {
-          new_script_input.value = "";
+          new_script_input.value = "/";
           getScripts();
         } else {
           alert(out);
@@ -158,11 +158,11 @@
   }
 
   function deleteScript(file_name) {
-    fetch('/api/delete_script?file_name=' + file_name)
+    fetch('/api/delete_script?file_name=' + stringToHex(file_name))
       .then(res => res.text())
       .then(out => {
         if (out == '200') {
-          document.getElementById(file_name).remove();
+          getScripts();
         } else {
           alert(out);
         }
@@ -175,7 +175,7 @@
   }
 
   function getScript(file_name) {
-    fetch('/api/get_script?file_name=' + file_name)
+    fetch('/api/get_script?file_name=' + stringToHex(file_name))
       .then(res => res.json())
       .then(out => {
         if (out.status == '200') {
@@ -193,7 +193,7 @@
   }
 
   function saveScript() {
-    fetch('/api/save_script?file_name=' + script_name_input.value + '&script=' + stringToHex(script_editor.value))
+    fetch('/api/save_script?file_name=' + stringToHex(script_name_input.value) + '&script=' + stringToHex(script_editor.value))
       .then(res => res.text())
       .then(out => {
         if (out != '200') {
@@ -209,7 +209,7 @@
   }
 
   function runScript(file_name) {
-    fetch('/api/run_script?file_name=' + file_name)
+    fetch('/api/run_script?file_name=' + stringToHex(file_name))
       .then(res => res.text())
       .then(out => {
         if (out != '200') {
