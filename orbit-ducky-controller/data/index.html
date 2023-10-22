@@ -293,12 +293,21 @@
 </style>
 
 <script>
-  function stringToHex(str) {
+  function stringToHex(input) {
     let hex = "";
-    for (let i = 0; i < str.length; i++) {
-      hex += str.charCodeAt(i).toString(16);
+    for (let i = 0; i < input.length; i++) {
+      hex += input.charCodeAt(i).toString(16).padStart(2, '0');
     }
     return hex;
+  }
+
+  function hexToString(hex) {
+    let str = "";
+    for (let i = 0; i < hex.length; i += 2) {
+      const hexByte = hex.substr(i, 2);
+      str += String.fromCharCode(parseInt(hexByte, 16));
+    }
+    return str;
   }
 
   function getStatus() {
@@ -393,9 +402,9 @@
     fetch('/api/get_script?file_name=' + file_name)
       .then(res => res.json())
       .then(out => {
-        if (out.status == 200) {
+        if (out.status == '200') {
           script_name_input.value = file_name;
-          script_editor.value = out.content;
+          script_editor.value = hexToString(out.content);
         } else {
           alert(out.content);
         }

@@ -353,7 +353,7 @@ String getScript(String file_name)
   String content = file.readString();
   file.close();
 
-  return "{ \"status\":200, \"content\":\"" + content + "\" }";
+  return "{ \"status\":200, \"content\":\"" + stringToHex(content) + "\" }";
 }
 
 String saveScript(String file_name, String script)
