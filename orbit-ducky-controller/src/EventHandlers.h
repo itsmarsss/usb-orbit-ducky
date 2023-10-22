@@ -3,13 +3,11 @@
 #include <ESP.h>
 #include <SPIFFS.h>
 
-#include <list>
-
 #include "Helpers.h"
-#include "ODSInterpreter.h"
+
+void interpretLine(String);
 
 uint32_t last_req = millis();
-std::list<byte *> decimalStream;
 
 String spiffsInfo()
 {
@@ -159,26 +157,27 @@ String runScript(String file_name)
     File file = SPIFFS.open(file_name, FILE_READ);
     String instruction = file.readString();
 
-    std::vector<String> lines; // Use a vector to dynamically store the lines
+    std::vector<String> lines;
 
-    int startPos = 0; // Initialize the start position
+    int startPos = 0;
 
     while (startPos < instruction.length())
     {
-        int endPos = instruction.indexOf('\n', startPos); // Find the next newline character
+        int endPos = instruction.indexOf('\n', startPos);
         if (endPos == -1)
         {
-            endPos = instruction.length(); // If no more newline characters, use the end of the string
+            endPos = instruction.length();
         }
-        lines.push_back(instruction.substring(startPos, endPos)); // Store the line
-        startPos = endPos + 1;                                    // Update the start position for the next iteration
+        lines.push_back(instruction.substring(startPos, endPos));
+        startPos = endPos + 1;
     }
 
-    // Now, you have the lines stored in the "lines" vector.
-
-    // Print the lines for demonstration
     for (size_t i = 0; i < lines.size(); i++)
     {
+        if (!lines[i].startsWith("COM"))
+        {
+            interpretLine(lines[i]);
+        }
         Serial.println(lines[i]);
     }
 
