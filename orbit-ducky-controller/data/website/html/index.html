@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>USB Orbit Ducky</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 
 <body>
@@ -45,7 +46,7 @@
       </div>
 
       <div id="new_script">
-        <input id="new_script_input" maxlength="30" placeholder="file name">
+        <input id="new_script_input" maxlength="30" placeholder="/file/path">
         <button id="create_script" class="green" onclick="newScript()">CREATE</button>
       </div>
     </div>
@@ -53,7 +54,7 @@
     <div id="editor" class="section">
       <div class="headers">Editor</div>
       <div id="editor_actions">
-        <input id="script_name_input" maxlength="30" placeholder="file name">
+        <input id="script_name_input" maxlength="30" placeholder="/file/path">
         <button class="yellow">AUTORUN</button>
         <button class="blue" onclick="downloadScript()">DOWNLOAD</button>
       </div>
@@ -66,231 +67,6 @@
     </div>
   </div>
 </body>
-
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Oswald&family=Poppins&display=swap');
-
-  :root {
-    --topbar: #1e1f22;
-    --background: #313338;
-    --header: #252627;
-
-    --text: #ffffff;
-    --accent: #ffcc00;
-    --success: #348200;
-    --error: #ff4400;
-    --action: #26a0da;
-  }
-
-  html {
-    font-family: sans-serif;
-    background: var(--background);
-    color: var(--text);
-  }
-
-  body {
-    margin: 0;
-  }
-
-  button,
-  input,
-  textarea {
-    background: var(--header);
-    color: white;
-    outline: none;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 5px;
-    letter-spacing: 1px;
-  }
-
-  button:hover,
-  input:hover,
-  textarea:hover {
-    box-shadow: 2px 2px 5px var(--background),
-      -2px -2px 5px var(--header);
-    transition: 200ms;
-  }
-
-  button {
-    cursor: pointer;
-  }
-
-  input {
-    width: 125px;
-  }
-
-  textarea {
-    font-family: 'Courier New', Courier, monospace;
-    padding: 15px 15px;
-    height: 400px;
-    resize: vertical;
-  }
-
-  .red {
-    color: var(--error);
-  }
-
-  .blue {
-    color: var(--action);
-  }
-
-  .green {
-    color: var(--success);
-  }
-
-  .yellow {
-    color: var(--accent);
-  }
-
-  .green_back {
-    background: var(--success);
-  }
-
-  .red_back {
-    background: var(--error);
-  }
-
-  #title {
-    width: 100%;
-    text-align: center;
-  }
-
-  #content {
-    width: 100%;
-    max-width: 1000px;
-    display: flex;
-    margin: auto;
-    flex-direction: column;
-  }
-
-  #tabs {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    align-content: space-around;
-    justify-content: center;
-    height: 25px;
-    padding: 10px;
-    background: var(--topbar);
-  }
-
-  .tab {
-    font-size: 20px;
-    line-height: 25px;
-    cursor: pointer;
-  }
-
-  .tab:hover {
-    transform: scale(1.1);
-    transition: 200ms;
-  }
-
-  .tab.active {
-    text-decoration: underline;
-  }
-
-  .section {
-    border-radius: 15px;
-    margin: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .headers {
-    border-radius: 5px;
-    padding: 5px 10px;
-    background: var(--header);
-    border-left: var(--accent) 5px solid;
-    font-size: 25px;
-    font-family: "Oswald", "Poppins";
-    letter-spacing: 5px;
-  }
-
-  #storage_progress {
-    width: 100%;
-    border: 0;
-    background: var(--header);
-    border-radius: 15px;
-  }
-
-  #storage_progress::-webkit-progress-value {
-    background: var(--action);
-    border-radius: 15px;
-  }
-
-  #storage_progress::-webkit-progress-bar {
-    border: 0;
-    background: var(--header);
-    border-radius: 15px;
-  }
-
-  #storage_progress::-moz-progress-bar {
-    border: 0;
-    background: var(--action);
-    border-radius: 15px;
-  }
-
-  #storage_status_row,
-  #chip_status_row {
-    margin-top: 10px;
-  }
-
-  .chip {
-    border-radius: 15px;
-    padding: 5px 10px;
-    color: var(--text);
-    font-weight: bold;
-  }
-
-  .script_key {
-    height: 15px;
-  }
-
-  .script_item {
-    display: flex;
-    border-bottom: 1px #626262 solid;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
-  .script_item>* {
-    width: 33.33%;
-    flex-grow: 0;
-    max-width: 275px;
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-  }
-
-  .script_value {
-    line-height: 35px;
-  }
-
-  .script_actions {
-    display: flex;
-    gap: 5px;
-    flex-grow: 1;
-    max-width: unset;
-  }
-
-  #new_script {
-    margin-top: 20px;
-  }
-
-  #editor_actions {
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-  }
-
-  #editor_control_actions {
-    display: flex;
-    gap: 5px;
-    justify-content: end;
-  }
-</style>
 
 <script>
   function stringToHex(input) {
@@ -352,7 +128,7 @@
     for (let i = 0; i < data.scripts.length; i++) {
       scripts_list.innerHTML += `
       <div class="script_item" id="${data.scripts[i].name}">
-            <span class="script_value">/${data.scripts[i].name}</span>
+            <span class="script_value">${data.scripts[i].name}</span>
             <span class="script_value">${data.scripts[i].bytes}</span>
             <div class="script_value script_actions">
               <button class="red" onclick="deleteScript('${data.scripts[i].name}')">DELETE</button>
@@ -451,6 +227,20 @@
     window.open(
       "./api/download_script?file_name=" + script_name_input.value);
   }
+
+  function prependSlash(element) {
+    let value = element.value;
+    if (value.charAt(0) != "/") {
+      element.value = "/" + value;
+    }
+  }
+
+  new_script_input.addEventListener("input", () => {
+    prependSlash(new_script_input);
+  });
+  script_name_input.addEventListener("input", () => {
+    prependSlash(script_name_input);
+  });
 
   getStatus();
   getScripts();
