@@ -18,8 +18,6 @@ std::list<byte *> decimalStream;
 
 void interpretLine(String line)
 {
-    byte *byteArray = new byte[2];
-
     int spaceIndex = line.indexOf(' ');
     if (spaceIndex != -1)
     {
@@ -35,9 +33,12 @@ void interpretLine(String line)
             {
                 for (int i = 0; i < value.length(); i++)
                 {
+                    byte *byteArray = new byte[2];
+
                     byteArray[0] = static_cast<byte>('w');
                     byteArray[1] = static_cast<byte>(value.charAt(i));
 
+                    Serial.println(static_cast<byte>(value.charAt(i)));
                     decimalStream.push_back(byteArray);
                 }
             }

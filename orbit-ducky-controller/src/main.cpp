@@ -45,6 +45,8 @@ void requestEvent()
     return;
   }
 
-  Wire.write(decimalStream.front(), 2);
+  byte *dataToSend = decimalStream.front();
   decimalStream.pop_front();
+
+  Wire.write(dataToSend, 2);
 }
