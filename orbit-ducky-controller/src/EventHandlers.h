@@ -35,11 +35,11 @@ String scripts()
 
     while (file)
     {
-        Serial.println(file.name());
+        Serial.println(file.path());
 
-        if (!String(file.name()).equals("index.html"))
+        if (!String(file.path()).startsWith("/website/"))
         {
-            scripts_json += "{ \"name\":\"" + String(file.name()) + "\",\"bytes\":" + String(file.size()) + " },";
+            scripts_json += "{ \"name\":\"" + String(file.path()) + "\",\"bytes\":" + String(file.size()) + " },";
         }
         file = root.openNextFile();
     }
@@ -60,12 +60,12 @@ String newScript(String file_name)
         return checkStat;
     }
 
-    if (SPIFFS.exists("/" + file_name))
+    if (SPIFFS.exists(file_name))
     {
-        return "File with name '" + file_name + "' already exists.";
+        return "File with path '" + file_name + "' already exists.";
     }
 
-    File file = SPIFFS.open("/" + file_name, FILE_WRITE);
+    File file = SPIFFS.open(file_name, FILE_WRITE);
     file.print("COM This is a new Orbit Ducky Script file");
     file.close();
 
@@ -80,14 +80,14 @@ String deleteScript(String file_name)
         return checkStat;
     }
 
-    File file = SPIFFS.open("/" + file_name);
+    File file = SPIFFS.open(file_name);
 
-    if (!SPIFFS.exists("/" + file_name))
+    if (!SPIFFS.exists(file_name))
     {
-        return "File with name '" + file_name + "' doesn't exists.";
+        return "File with path '" + file_name + "' doesn't exists.";
     }
 
-    if (SPIFFS.remove("/" + file_name))
+    if (SPIFFS.remove(file_name))
     {
         return "200";
     }
@@ -103,12 +103,12 @@ String getScript(String file_name)
         return "{ \"status\":404, \"content\":\"" + checkStat + "\" }";
     }
 
-    if (!SPIFFS.exists("/" + file_name))
+    if (!SPIFFS.exists(file_name))
     {
-        return "{ \"status\":404, \"content\":\"File with name '" + file_name + "' doesn't exists.\" }";
+        return "{ \"status\":404, \"content\":\"File with path '" + file_name + "' doesn't exists.\" }";
     }
 
-    File file = SPIFFS.open("/" + file_name, FILE_READ);
+    File file = SPIFFS.open(file_name, FILE_READ);
     String content = file.readString();
     file.close();
 
@@ -123,7 +123,7 @@ String saveScript(String file_name, String script)
         return checkStat;
     }
 
-    File file = SPIFFS.open("/" + file_name, FILE_WRITE);
+    File file = SPIFFS.open(file_name, FILE_WRITE);
     file.print(script);
     file.close();
 
@@ -138,16 +138,16 @@ String runScript(String file_name)
         return checkStat;
     }
 
-    if (!SPIFFS.exists("/" + file_name))
+    if (!SPIFFS.exists(file_name))
     {
-        return "File with name '" + file_name + "' doesn't exists.";
+        return "File with path '" + file_name + "' doesn't exists.";
     }
 
     /*
     Run Script
       - Append to 'decimalStream'
     */
-    File file = SPIFFS.open("/" + file_name, FILE_READ);
+    File file = SPIFFS.open(file_name, FILE_READ);
     String toType = file.readString();
 
     char toTypeArray[toType.length() + 1];

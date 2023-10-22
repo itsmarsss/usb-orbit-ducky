@@ -28,7 +28,10 @@ void setupEndPoints()
                     { request->send(404, "text/plain", "Not found"); });
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(SPIFFS, "/index.html", String(), false); });
+            { request->send(SPIFFS, "/website/html/index.html", String(), false); });
+
+  server.on("/css/style.css", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/website/css/style.css", String(), false); });
 
   server.on("/api/status", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(200, "text/html", spiffsInfo()); });
@@ -43,8 +46,6 @@ void setupEndPoints()
       String file_name = request->getParam("file_name")->value();
 
       file_name.trim();
-      file_name.replace("/", "");
-      file_name.replace("\\", "");
 
       request->send(200, "text/html", newScript(file_name));
     }
