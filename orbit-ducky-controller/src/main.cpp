@@ -175,14 +175,20 @@ void loop()
 
 void requestEvent()
 {
-  decimalStream.push_back(65);
+  last_req = millis();
+
+  if (decimalStream.empty())
+  {
+    byte dataToSend[2] = {0, 0};
+
+    Wire.write(dataToSend, 2);
+    return;
+  }
 
   byte dataToSend[2] = {static_cast<byte>('w'), decimalStream.front()};
   decimalStream.pop_front();
 
   Wire.write(dataToSend, 2);
-
-  last_req = millis();
 }
 
 String hexToString(String hex)
@@ -368,6 +374,17 @@ String runScript(String file_name)
   Run Script
     - Append to 'decimalStream'
   */
+  File file = SPIFFS.open("/" + file_name, FILE_READ);
+  String toType = file.readString();
+
+  char toTypeArray[toType.length() + 1];
+
+  toType.toCharArray(toTypeArray, toType.length());
+
+  for (char c : toType)
+  {
+    decimalStream.push_back((int)c);
+  }
 
   return "200";
 }
