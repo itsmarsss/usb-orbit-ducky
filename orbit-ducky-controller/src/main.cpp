@@ -12,18 +12,19 @@ void requestEvent();
 
 void setup()
 {
+  Serial.begin(115200);
   Serial.println("~~ USB Orbit Ducky ~~");
 
-  Serial.begin(115200);
-
   mountSPIFFS();
+
+  Serial.println(runScript("Aaa"));
+
+  Wire.begin(8);
+  Wire.onRequest(requestEvent);
 
   setupAP();
 
   setupServer();
-
-  Wire.begin(8);
-  Wire.onRequest(requestEvent);
 }
 
 void loop()
