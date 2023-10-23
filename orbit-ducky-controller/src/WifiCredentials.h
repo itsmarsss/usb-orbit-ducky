@@ -1,6 +1,17 @@
-char ssid[] = "USB Orbit Ducky";
-char password[] = "12345678";
-uint8_t channel = 1;
-uint8_t ssid_hidden = 1;
-uint8_t max_connection = 1;
-boolean ftm_responder = true;
+#ifndef WIFICREDENTIALS_H
+#define WIFICREDENTIALS_H
+
+#include <Arduino.h>
+
+class WifiCredentials
+{
+public:
+    static char ssid[];
+    static char password[];
+    static uint8_t channel;
+    static uint8_t ssid_hidden;
+    static uint8_t max_connection;
+    static boolean ftm_responder;
+};
+
+#endif

@@ -1,6 +1,6 @@
 #include "Helpers.h"
 
-String hexToString(String hex)
+String Helpers::hexToString(String hex)
 {
     String str = "";
     for (int i = 0; i < hex.length(); i += 2)
@@ -14,7 +14,7 @@ String hexToString(String hex)
     return str;
 }
 
-String stringToHex(String str)
+String Helpers::stringToHex(String str)
 {
     String hex = "";
     for (int i = 0; i < str.length(); i++)
@@ -28,7 +28,7 @@ String stringToHex(String str)
     return hex;
 }
 
-bool isBlank(const String &str)
+bool Helpers::isBlank(const String &str)
 {
     for (char c : str)
     {
@@ -40,12 +40,12 @@ bool isBlank(const String &str)
     return true;
 }
 
-bool isWhitespace(char c)
+bool Helpers::isWhitespace(char c)
 {
     return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '/' || c == '\\');
 }
 
-String file_nameChecker(String file_name)
+String Helpers::file_nameChecker(String file_name)
 {
     if (isBlank(file_name))
     {

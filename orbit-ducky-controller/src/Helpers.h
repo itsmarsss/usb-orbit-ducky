@@ -1,8 +1,17 @@
+#ifndef HELPERS_H
+#define HELPERS_H
+
 #include <Arduino.h>
 
-String hexToString(String hex);
-String stringToHex(String str);
+class Helpers
+{
+public:
+    static String hexToString(String hex);
+    static String stringToHex(String str);
 
-bool isBlank(const String &str);
-bool isWhitespace(char c);
-String file_nameChecker(String file_name);
+    static bool isBlank(const String &str);
+    static bool isWhitespace(char c);
+    static String file_nameChecker(String file_name);
+};
+
+#endif

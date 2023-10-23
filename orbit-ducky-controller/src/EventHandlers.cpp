@@ -1,8 +1,6 @@
 #include "EventHandlers.h"
 
-String stringToHex(String);
-
-String spiffsInfo()
+String EventHandlers::spiffsInfo()
 {
     uint32_t program_size = ESP.getSketchSize();
 
@@ -12,12 +10,12 @@ String spiffsInfo()
 
     uint32_t free_size = ESP.getFlashChipSize() - program_size - file_system_size + file_system_used;
 
-    u_int8_t promicro_online = (millis() - last_req) >= 500 ? 0 : 1;
+    u_int8_t promicro_online = (millis() - WireService::lastReq) >= 500 ? 0 : 1;
 
     return "{ \"file_system_size\":" + String(file_system_size) + ",\"file_system_used\":" + String(file_system_used) + ",\"atmega32U4\":" + String(promicro_online) + " }";
 }
 
-String getScripts()
+String EventHandlers::getScripts()
 {
     File root = SPIFFS.open("/");
 
@@ -44,9 +42,9 @@ String getScripts()
     return "{ \"scripts\":[" + scripts_json + "] }";
 }
 
-String newScript(String file_name)
+String EventHandlers::newScript(String file_name)
 {
-    String checkStat = file_nameChecker(file_name);
+    String checkStat = Helpers::file_nameChecker(file_name);
     if (!checkStat.equals("200"))
     {
         return checkStat;
@@ -64,9 +62,9 @@ String newScript(String file_name)
     return "200";
 }
 
-String deleteScript(String file_name)
+String EventHandlers::deleteScript(String file_name)
 {
-    String checkStat = file_nameChecker(file_name);
+    String checkStat = Helpers::file_nameChecker(file_name);
     if (!checkStat.equals("200"))
     {
         return checkStat;
@@ -87,9 +85,9 @@ String deleteScript(String file_name)
     return "Error deleting file '" + file_name + "'.";
 }
 
-String getScript(String file_name)
+String EventHandlers::getScript(String file_name)
 {
-    String checkStat = file_nameChecker(file_name);
+    String checkStat = Helpers::file_nameChecker(file_name);
     if (!checkStat.equals("200"))
     {
         return "{ \"status\":404, \"content\":\"" + checkStat + "\" }";
@@ -104,12 +102,12 @@ String getScript(String file_name)
     String content = file.readString();
     file.close();
 
-    return "{ \"status\":200, \"content\":\"" + stringToHex(content) + "\" }";
+    return "{ \"status\":200, \"content\":\"" + Helpers::stringToHex(content) + "\" }";
 }
 
-String saveScript(String file_name, String new_file_name, String script)
+String EventHandlers::saveScript(String file_name, String new_file_name, String script)
 {
-    String checkStat = file_nameChecker(new_file_name);
+    String checkStat = Helpers::file_nameChecker(new_file_name);
     if (!checkStat.equals("200"))
     {
         return checkStat;
@@ -129,9 +127,9 @@ String saveScript(String file_name, String new_file_name, String script)
     return "200";
 }
 
-String runScript(String file_name)
+String EventHandlers::runScript(String file_name)
 {
-    String checkStat = file_nameChecker(file_name);
+    String checkStat = Helpers::file_nameChecker(file_name);
     if (!checkStat.equals("200"))
     {
         return checkStat;

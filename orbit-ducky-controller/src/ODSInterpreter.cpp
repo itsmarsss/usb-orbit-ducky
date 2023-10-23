@@ -12,6 +12,8 @@ KID              Key Identifier
 KDC              Key Decimal
 */
 
+std::list<byte *> ODSInterpreter::decimalStream;
+
 void ODSInterpreter::interpretLine(String line)
 {
     int spaceIndex = line.indexOf(' ');

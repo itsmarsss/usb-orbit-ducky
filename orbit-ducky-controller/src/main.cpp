@@ -14,8 +14,6 @@ void setup()
 
   SPIFFSService::setupSPIFFS();
 
-  Serial.println(runScript("/Aaa"));
-
   WireService::setupWireService();
 
   APService::setupAP();

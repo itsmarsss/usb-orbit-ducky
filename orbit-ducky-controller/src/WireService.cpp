@@ -1,5 +1,7 @@
 #include "WireService.h"
 
+void requestEvent();
+
 uint32_t WireService::lastReq = millis();
 
 void WireService::setupWireService()
@@ -12,7 +14,7 @@ void requestEvent()
 {
     WireService::lastReq = millis();
 
-    if (decimalStream.empty())
+    if (ODSInterpreter::decimalStream.empty())
     {
         byte dataToSend[2] = {0, 0};
 
@@ -20,8 +22,8 @@ void requestEvent()
         return;
     }
 
-    byte *dataToSend = decimalStream.front();
-    decimalStream.pop_front();
+    byte *dataToSend = ODSInterpreter::decimalStream.front();
+    ODSInterpreter::decimalStream.pop_front();
 
     Wire.write(dataToSend, 2);
 }
