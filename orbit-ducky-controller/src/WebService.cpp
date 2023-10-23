@@ -1,18 +1,6 @@
-#include <ESPAsyncWebServer.h>
-
-#include <SPIFFS.h>
+#include "WebService.h"
 
 AsyncWebServer server(80);
-
-void setupEndPoints();
-
-String spiffsInfo();
-String scripts();
-String newScript(String);
-String deleteScript(String);
-String getScript(String);
-String saveScript(String, String, String);
-String runScript(String);
 
 String hexToString(String);
 

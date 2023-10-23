@@ -1,13 +1,8 @@
 #include <Arduino.h>
 
-#include <Wire.h>
-
-#include <ESP.h>
-
 #include "Setup.h"
-#include "EventHandlers.h"
-#include "WebServer.h"
-#include "ODSInterpreter.h"
+#include "WireService.h"
+#include "WebService.h"
 
 void requestEvent();
 
@@ -18,10 +13,9 @@ void setup()
 
   mountSPIFFS();
 
-  Serial.println(runScript("Aaa"));
+  Serial.println(runScript("/Aaa"));
 
-  Wire.begin(8);
-  Wire.onRequest(requestEvent);
+  WireService::setupWireService();
 
   setupAP();
 
@@ -31,22 +25,4 @@ void setup()
 void loop()
 {
   delay(100);
-}
-
-void requestEvent()
-{
-  last_req = millis();
-
-  if (decimalStream.empty())
-  {
-    byte dataToSend[2] = {0, 0};
-
-    Wire.write(dataToSend, 2);
-    return;
-  }
-
-  byte *dataToSend = decimalStream.front();
-  decimalStream.pop_front();
-
-  Wire.write(dataToSend, 2);
 }
