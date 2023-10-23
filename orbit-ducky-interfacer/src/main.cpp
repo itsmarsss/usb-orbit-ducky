@@ -13,6 +13,9 @@ void setup()
   Serial.begin(9600);
   Wire.begin();
   Keyboard.begin();
+  delay(1000);
+  Serial.println("Start");
+  delay(1000);
 }
 
 void loop()
