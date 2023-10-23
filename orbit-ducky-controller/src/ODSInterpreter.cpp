@@ -12,7 +12,7 @@ KID              Key Identifier
 KDC              Key Decimal
 */
 
-void interpretLine(String line)
+void ODSInterpreter::interpretLine(String line)
 {
     int spaceIndex = line.indexOf(' ');
     if (spaceIndex != -1)

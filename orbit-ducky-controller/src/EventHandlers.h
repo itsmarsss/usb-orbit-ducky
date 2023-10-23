@@ -9,7 +9,7 @@
 #include "ODSInterpreter.h"
 
 String spiffsInfo();
-String scripts();
+String getScripts();
 String newScript(String file_name);
 String deleteScript(String file_name);
 String getScript(String file_name);

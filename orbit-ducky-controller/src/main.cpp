@@ -1,7 +1,8 @@
 #include <Arduino.h>
 
-#include "Setup.h"
+#include "SPIFFSService.h"
 #include "WireService.h"
+#include "APService.h"
 #include "WebService.h"
 
 void requestEvent();
@@ -11,15 +12,15 @@ void setup()
   Serial.begin(115200);
   Serial.println("~~ USB Orbit Ducky ~~");
 
-  mountSPIFFS();
+  SPIFFSService::setupSPIFFS();
 
   Serial.println(runScript("/Aaa"));
 
   WireService::setupWireService();
 
-  setupAP();
+  APService::setupAP();
 
-  setupServer();
+  WebServer::setupServer();
 }
 
 void loop()

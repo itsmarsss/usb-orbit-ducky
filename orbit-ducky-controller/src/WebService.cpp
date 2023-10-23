@@ -1,16 +1,13 @@
 #include "WebService.h"
 
-AsyncWebServer server(80);
-
-String hexToString(String);
-
 void setupServer()
 {
-  setupEndPoints();
+  AsyncWebServer server(80);
+  setupEndPoints(server);
   server.begin();
 }
 
-void setupEndPoints()
+void setupEndPoints(AsyncWebServer server)
 {
   server.onNotFound([](AsyncWebServerRequest *request)
                     { request->send(404, "text/plain", "Not found"); });
@@ -25,7 +22,7 @@ void setupEndPoints()
             { request->send(200, "text/html", spiffsInfo()); });
 
   server.on("/api/scripts", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(200, "text/html", scripts()); });
+            { request->send(200, "text/html", getScripts()); });
 
   server.on("/api/new_script", HTTP_GET, [](AsyncWebServerRequest *request)
             {

@@ -17,7 +17,7 @@ String spiffsInfo()
     return "{ \"file_system_size\":" + String(file_system_size) + ",\"file_system_used\":" + String(file_system_used) + ",\"atmega32U4\":" + String(promicro_online) + " }";
 }
 
-String scripts()
+String getScripts()
 {
     File root = SPIFFS.open("/");
 
@@ -169,7 +169,7 @@ String runScript(String file_name)
     {
         if (!lines[i].startsWith("COM"))
         {
-            interpretLine(lines[i]);
+            ODSInterpreter::interpretLine(lines[i]);
         }
         Serial.println(lines[i]);
     }

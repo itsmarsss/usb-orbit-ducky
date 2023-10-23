@@ -2,4 +2,8 @@
 
 #include <list>
 
-void interpretLine(String line);
+class ODSInterpreter
+{
+public:
+    static void interpretLine(String line);
+};

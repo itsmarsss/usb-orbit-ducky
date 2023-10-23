@@ -3,5 +3,11 @@
 
 #include "EventHandlers.h"
 
-void setupServer();
-void setupEndPoints();
+class WebServer
+{
+public:
+    static void setupServer();
+
+private:
+    void setupEndPoints();
+};
