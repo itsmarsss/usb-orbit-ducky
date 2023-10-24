@@ -17,8 +17,17 @@ void setupEndPoints()
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/website/html/index.html", String(), false); });
 
+  server.on("/settings", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/website/html/settings.html", String(), false); });
+
   server.on("/css/style.css", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/website/css/style.css", String(), false); });
+
+  server.on("/css/index.css", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/website/css/index.css", String(), false); });
+
+  server.on("/css/settings.css", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/website/css/settings.css", String(), false); });
 
   server.on("/api/status", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(200, "text/html", EventHandlers::spiffsInfo()); });

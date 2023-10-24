@@ -52,11 +52,26 @@ input {
     width: 125px;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+input[type=number] {
+    -moz-appearance: textfield !important;
+}
+
 textarea {
     font-family: 'Courier New', Courier, monospace;
     padding: 15px 15px;
     height: 400px;
     resize: vertical;
+}
+
+a {
+    color: var(--text);
+    text-decoration: none;
 }
 
 .red {
