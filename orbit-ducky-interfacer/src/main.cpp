@@ -29,6 +29,7 @@ void loop()
                 Press         p         112
                 Release       r         114
                 ReleaseAll    l         108
+                Delay         d         100
     */
     byte event = Wire.read();
     if (event == 0)
@@ -62,6 +63,9 @@ void loop()
       break;
     case 108: // l
       releaseAll();
+      break;
+    case 100: // d
+      delay(decimal);
       break;
     }
   }

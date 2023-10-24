@@ -1,7 +1,5 @@
 #include "ODSInterpreter.h"
 
-#include "KeyMap.h"
-
 /*
 Keyword          Purpose
 
@@ -22,13 +20,29 @@ void ODSInterpreter::interpretLine(String line)
     int spaceIndex = line.indexOf(' ');
     if (spaceIndex != -1)
     {
-        String key = line.substring(0, spaceIndex);
-        String value = line.substring(spaceIndex + 1);
         try
         {
+            String key = line.substring(0, spaceIndex);
+            String value = line.substring(spaceIndex + 1);
             if (key.equals("TDLY"))
             {
-                delay(value.toInt());
+                for (int i = 0; i < value.toInt() / 250; i++)
+                {
+                    byte *byteArray = new byte[2];
+
+                    byteArray[0] = static_cast<byte>('d');
+                    byteArray[1] = static_cast<byte>(250);
+
+                    Serial.println(static_cast<byte>(250));
+                    decimalStream.push_back(byteArray);
+                }
+                byte *byteArray = new byte[2];
+
+                byteArray[0] = static_cast<byte>('d');
+                byteArray[1] = static_cast<byte>(value.toInt() % 250);
+
+                Serial.println(static_cast<byte>(value.toInt() % 250));
+                decimalStream.push_back(byteArray);
             }
             else if (key.equals("WSTR"))
             {

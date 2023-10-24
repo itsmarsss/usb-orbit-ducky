@@ -5,6 +5,9 @@
 
 #include <list>
 
+#include "KeyMap.h"
+#include "Helpers.h"
+
 class ODSInterpreter
 {
 public:
