@@ -12,6 +12,10 @@ public:
     static uint8_t ssid_hidden;
     static uint8_t max_connection;
     static boolean ftm_responder;
+
+    static IPAddress IP;
+    static IPAddress gateway;
+    static IPAddress subnet;
 };
 
 #endif

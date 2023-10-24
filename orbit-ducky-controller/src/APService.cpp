@@ -1,8 +1,5 @@
 #include "APService.h"
 
-IPAddress IP(192, 168, 1, 1);
-IPAddress gateway(192, 168, 1, 1);
-IPAddress subnet(255, 255, 255, 0);
 void APService::setupAP()
 {
     WiFi.softAP(WifiCredentials::ssid,
@@ -12,7 +9,9 @@ void APService::setupAP()
                 WifiCredentials::max_connection,
                 WifiCredentials::ftm_responder);
     delay(500);
-    WiFi.softAPConfig(IP, gateway, subnet);
+    WiFi.softAPConfig(WifiCredentials::IP,
+                      WifiCredentials::gateway,
+                      WifiCredentials::subnet);
     IPAddress IP = WiFi.softAPIP();
     Serial.println("WiFi:");
     Serial.print("\tSSID: ");
