@@ -1,0 +1,82 @@
+#storage_status_row,
+#chip_status_row {
+    margin-top: 10px;
+}
+
+#storage_progress {
+    width: 100%;
+    border: 0;
+    background: var(--header);
+    border-radius: 15px;
+}
+
+#storage_progress::-webkit-progress-value {
+    background: var(--action);
+    border-radius: 15px;
+}
+
+#storage_progress::-webkit-progress-bar {
+    border: 0;
+    background: var(--header);
+    border-radius: 15px;
+}
+
+#storage_progress::-moz-progress-bar {
+    border: 0;
+    background: var(--action);
+    border-radius: 15px;
+}
+
+.chip {
+    border-radius: 15px;
+    padding: 5px 10px;
+    color: var(--text);
+    font-weight: bold;
+}
+
+.script_key {
+    height: 15px;
+}
+
+.script_item {
+    display: flex;
+    border-bottom: 1px #626262 solid;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.script_item>* {
+    width: 33.33%;
+    flex-grow: 0;
+    max-width: 275px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.script_value {
+    line-height: 35px;
+}
+
+.script_actions {
+    display: flex;
+    gap: 5px;
+    flex-grow: 1;
+    max-width: unset;
+}
+
+#new_script {
+    margin-top: 20px;
+}
+
+#editor_actions {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+#editor_control_actions {
+    display: flex;
+    gap: 5px;
+    justify-content: end;
+}

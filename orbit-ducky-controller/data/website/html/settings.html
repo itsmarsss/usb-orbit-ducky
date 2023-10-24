@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USB Orbit Ducky</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/settings.css">
+
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/settings.css">
+</head>
+
+<body>
+    <h1 id="title">USB Orbit Ducky</h1>
+    <div id="tabs">
+        <div class="tab">WiFi Duck</div>
+        <div class="tab">Terminal</div>
+        <div class="tab active">Settings</div>
+        <div class="tab">About</div>
+    </div>
+    <div id="content">
+
+        <div id="access_point" class="section">
+            <div class="headers">Access Point</div>
+            <div class="row"><b>SSID</b>:&emsp;
+                <input id="ssid_input" placeholder="ssid" value="USB Orbit Ducky">
+            </div>
+            <div class="row"><b>Password</b>:&emsp;
+                <input id="password_input" placeholder="password" value="12345678">
+            </div>
+        </div>
+
+        <div id="network" class="section">
+            <div class="headers">Network</div>
+
+            <div class="row"><b>Channels</b>:&emsp;
+                <select>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                </select>
+            </div>
+            <div class="row"><b>Hide SSID</b>:&emsp;
+                <select>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </div>
+            <div class="row"><b>Max Connections</b>:&emsp;
+                <select>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                </select>
+            </div>
+            <div class="row"><b>FTM Responder</b>:&emsp;
+                <select>
+                    <option>Yes</option>
+                    <option>No</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="addresses" class="section">
+            <div class="headers">Addresses</div>
+            <div class="row"><b>IP</b>:&emsp;
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="192">.
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="168">.
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">.
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">
+            </div>
+            <div class="row"><b>Gateway</b>:&emsp;
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="192">.
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="168">.
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">.
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">
+            </div>
+            <div class="row"><b>Subnet</b>:&emsp;
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="255">.
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="255">.
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="255">.
+                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="0">
+            </div>
+
+            <div class="row">
+                <button class="green">UPDATE</button>
+                <button class="red">RESTART</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    // Script
+</script>
+
+</html>
