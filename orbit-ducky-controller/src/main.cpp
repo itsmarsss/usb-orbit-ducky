@@ -68,6 +68,8 @@ void setup()
   KeyMap::keyMap["KEY_SCROLL_LOCK"] = 207;
   KeyMap::keyMap["KEY_PAUSE"] = 208;
 
+  delay(3000);
+
   SPIFFSService::setupSPIFFS();
 
   WireService::setupWireService();
