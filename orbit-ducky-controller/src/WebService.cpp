@@ -206,54 +206,89 @@ void setupEndPoints()
       return;
     }
 
-    String ssid = Helpers::hexToString(request -> getParam("ssid") -> value());
-    String pwd = Helpers::hexToString(request -> getParam("pwd") -> value());
-    
-    uint8_t channel = request -> getParam("channel") -> value().toInt();
-    uint8_t hidessid = request -> getParam("hidessid") -> value().toInt();
-    uint8_t maxconnect = request -> getParam("maxconnect") -> value().toInt();
-    uint8_t ftmrespond = request -> getParam("ftmrespond") -> value().toInt();
-    
-    uint8_t ip1 = request -> getParam("ip1") -> value().toInt();
-    uint8_t ip2 = request -> getParam("ip2") -> value().toInt();
-    uint8_t ip3 = request -> getParam("ip3") -> value().toInt();
-    uint8_t ip4 = request -> getParam("ip4") -> value().toInt();
-    
-    uint8_t gateway1 = request -> getParam("gateway1") -> value().toInt();
-    uint8_t gateway2 = request -> getParam("gateway2") -> value().toInt();
-    uint8_t gateway3 = request -> getParam("gateway3") -> value().toInt();
-    uint8_t gateway4 = request -> getParam("gateway4") -> value().toInt();
-    
-    uint8_t subnet1 = request -> getParam("subnet1") -> value().toInt();
-    uint8_t subnet2 = request -> getParam("subnet2") -> value().toInt();
-    uint8_t subnet3 = request -> getParam("subnet3") -> value().toInt();
-    uint8_t subnet4 = request -> getParam("subnet4") -> value().toInt();
+    try
+    {
+      String ssid = Helpers::hexToString(request -> getParam("ssid") -> value());
+      String pwd = Helpers::hexToString(request -> getParam("pwd") -> value());
+      
+      uint8_t channel = request -> getParam("channel") -> value().toInt();
+      uint8_t hidessid = request -> getParam("hidessid") -> value().toInt();
+      uint8_t maxconnect = request -> getParam("maxconnect") -> value().toInt();
+      uint8_t ftmrespond = request -> getParam("ftmrespond") -> value().toInt();
+      
+      uint8_t ip1 = request -> getParam("ip1") -> value().toInt();
+      uint8_t ip2 = request -> getParam("ip2") -> value().toInt();
+      uint8_t ip3 = request -> getParam("ip3") -> value().toInt();
+      uint8_t ip4 = request -> getParam("ip4") -> value().toInt();
+      
+      uint8_t gateway1 = request -> getParam("gateway1") -> value().toInt();
+      uint8_t gateway2 = request -> getParam("gateway2") -> value().toInt();
+      uint8_t gateway3 = request -> getParam("gateway3") -> value().toInt();
+      uint8_t gateway4 = request -> getParam("gateway4") -> value().toInt();
+      
+      uint8_t subnet1 = request -> getParam("subnet1") -> value().toInt();
+      uint8_t subnet2 = request -> getParam("subnet2") -> value().toInt();
+      uint8_t subnet3 = request -> getParam("subnet3") -> value().toInt();
+      uint8_t subnet4 = request -> getParam("subnet4") -> value().toInt();
 
-    ssid.toCharArray(WifiCredentials::ssid, 30);
-    pwd.toCharArray(WifiCredentials::password, 15);
+      ssid.toCharArray(WifiCredentials::ssid, 30);
+      pwd.toCharArray(WifiCredentials::password, 15);
 
-    WifiCredentials::channel = channel;
-    WifiCredentials::ssid_hidden = hidessid;
-    WifiCredentials::max_connection = maxconnect;
-    WifiCredentials::ftm_responder = ftmrespond;
-    
-    WifiCredentials::IP = IPAddress(ip1, ip2, ip3, ip4);
-    
-    WifiCredentials::gateway = IPAddress(gateway1, gateway2, gateway3, gateway4);
-    
-    WifiCredentials::subnet = IPAddress(subnet1, subnet2, subnet3, subnet4);
+      WifiCredentials::channel = channel;
+      WifiCredentials::ssid_hidden = hidessid;
+      WifiCredentials::max_connection = maxconnect;
+      WifiCredentials::ftm_responder = ftmrespond;
+      
+      WifiCredentials::IP = IPAddress(ip1, ip2, ip3, ip4);
+      
+      WifiCredentials::gateway = IPAddress(gateway1, gateway2, gateway3, gateway4);
+      
+      WifiCredentials::subnet = IPAddress(subnet1, subnet2, subnet3, subnet4);
 
-    Serial.println(WifiCredentials::ssid);
-    Serial.println(WifiCredentials::password);
-    
-    Serial.println(WifiCredentials::channel);
-    Serial.println(WifiCredentials::ssid_hidden);
-    Serial.println(WifiCredentials::max_connection);
-    Serial.println(WifiCredentials::ftm_responder);
-    
-    Serial.println(WifiCredentials::IP);
-    Serial.println(WifiCredentials::gateway);
-    Serial.println(WifiCredentials::subnet);
+      Serial.println(WifiCredentials::ssid);
+      Serial.println(WifiCredentials::password);
+      
+      Serial.println(WifiCredentials::channel);
+      Serial.println(WifiCredentials::ssid_hidden);
+      Serial.println(WifiCredentials::max_connection);
+      Serial.println(WifiCredentials::ftm_responder);
+      
+      Serial.println(WifiCredentials::IP);
+      Serial.println(WifiCredentials::gateway);
+      Serial.println(WifiCredentials::subnet);
+
+      StaticJsonDocument<500> doc;
+
+      doc["ssid"] = ssid.substring(0, 30);
+      doc["pwd"] = pwd.substring(0, 15);
+      
+      doc["channel"] = channel;
+      doc["hidessid"] = hidessid;
+      doc["maxconnect"] = maxconnect;
+      doc["ftmrespond"] = ftmrespond;
+      
+      doc["ip1"] = ip1;
+      doc["ip2"] = ip2;
+      doc["ip3"] = ip3;
+      doc["ip4"] = ip4;
+      
+      doc["gateway1"] = gateway1;
+      doc["gateway2"] = gateway2;
+      doc["gateway3"] = gateway3;
+      doc["gateway4"] = gateway4;
+      
+      doc["subnet1"] = subnet1;
+      doc["subnet2"] = subnet2;
+      doc["subnet3"] = subnet3;
+      doc["subnet4"] = subnet4;
+
+      serializeJsonPretty(doc, Serial);
+    }
+    catch (const std::exception &e)
+    {
+        Serial.println(e.what());
+        request -> send(200, "text/html", e.what());
+    }
 
     request -> send(200, "text/html", "200"); });
 

@@ -4,6 +4,7 @@
 #include <ESPAsyncWebServer.h>
 #include <ESP.h>
 #include <SPIFFS.h>
+#include <ArduinoJson.h>
 
 #include "EventHandlers.h"
 #include "Helpers.h"
