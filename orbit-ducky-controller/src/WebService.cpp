@@ -29,6 +29,9 @@ void setupEndPoints()
   server.on("/css/settings.css", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/website/css/settings.css", String(), false); });
 
+  server.on("/js/index.js", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/website/js/index.js", String(), false); });
+
   server.on("/api/status", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(200, "text/html", EventHandlers::spiffsInfo()); });
 
