@@ -2,6 +2,7 @@
 #define WEBSERVICE_H
 
 #include <ESPAsyncWebServer.h>
+#include <ESP.h>
 #include <SPIFFS.h>
 
 #include "EventHandlers.h"

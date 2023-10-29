@@ -1,5 +1,8 @@
 .row {
     margin-top: 10px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
 }
 
 .ip_slot {

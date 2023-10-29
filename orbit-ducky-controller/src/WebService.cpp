@@ -32,6 +32,9 @@ void setupEndPoints()
   server.on("/js/index.js", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/website/js/index.js", String(), false); });
 
+  server.on("/js/settings.js", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/website/js/settings.js", String(), false); });
+
   server.on("/api/status", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(200, "text/html", EventHandlers::spiffsInfo()); });
 
@@ -124,4 +127,16 @@ void setupEndPoints()
     download.close();
 
     request -> send(response); });
+
+  server.on("/api/restart", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+    request->send(200, "text/html", "ok.");
+    Serial.println("Restarting...");
+    ESP.restart(); });
+
+  server.on("/api/shutdown", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+    request->send(200, "text/html", "ok.");
+    Serial.println("Shutting Down...");
+    ESP.deepSleep(999999999*999999999U); }); // Please no...
 }
