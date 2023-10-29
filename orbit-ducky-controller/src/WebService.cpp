@@ -131,6 +131,9 @@ void setupEndPoints()
 
     request -> send(response); });
 
+  server.on("/api/settings", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/website/wificredentials.json", String(), false); });
+
   server.on("/api/update_settings", HTTP_GET, [](AsyncWebServerRequest *request)
             {
     if (!(request -> hasParam("ssid"))) {
@@ -245,18 +248,6 @@ void setupEndPoints()
       
       WifiCredentials::subnet = IPAddress(subnet1, subnet2, subnet3, subnet4);
 
-      Serial.println(WifiCredentials::ssid);
-      Serial.println(WifiCredentials::password);
-      
-      Serial.println(WifiCredentials::channel);
-      Serial.println(WifiCredentials::ssid_hidden);
-      Serial.println(WifiCredentials::max_connection);
-      Serial.println(WifiCredentials::ftm_responder);
-      
-      Serial.println(WifiCredentials::IP);
-      Serial.println(WifiCredentials::gateway);
-      Serial.println(WifiCredentials::subnet);
-
       StaticJsonDocument<500> doc;
 
       doc["ssid"] = ssid.substring(0, 30);
@@ -282,7 +273,13 @@ void setupEndPoints()
       doc["subnet3"] = subnet3;
       doc["subnet4"] = subnet4;
 
-      serializeJsonPretty(doc, Serial);
+      ArduinoJson::serializeJsonPretty(doc, Serial);
+
+      File file = SPIFFS.open("/website/wificredentials.json", FILE_WRITE);
+
+      ArduinoJson::serializeJson(doc, file);
+
+      file.close();
     }
     catch (const std::exception &e)
     {

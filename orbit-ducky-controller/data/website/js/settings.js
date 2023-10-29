@@ -1,3 +1,14 @@
+function getSettings() {
+    fetch('/api/settings')
+        .then(res => res.text())
+        .then(out => title.innerHTML = res)
+        .catch(err => {
+            console.log('Error querying json');
+            alert('Error getting settings... Please reload: ' + err);
+            throw err;
+        });
+}
+
 function updateSettings() {
     let settings = `
 ssid=${stringToHex(ssid_input.value)}
