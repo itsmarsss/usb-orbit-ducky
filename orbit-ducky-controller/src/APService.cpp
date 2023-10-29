@@ -2,6 +2,8 @@
 
 void APService::setupAP()
 {
+    WifiCredentials::loadWifiCredentials();
+
     WiFi.softAP(WifiCredentials::ssid,
                 WifiCredentials::password,
                 WifiCredentials::channel,

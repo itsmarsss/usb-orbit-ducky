@@ -2,6 +2,9 @@
 #define WIFICREDENTIALS_H
 
 #include <Arduino.h>
+#include <ESPAsyncWebServer.h>
+#include <SPIFFS.h>
+#include <ArduinoJson.h>
 
 class WifiCredentials
 {
@@ -16,6 +19,8 @@ public:
     static IPAddress IP;
     static IPAddress gateway;
     static IPAddress subnet;
+
+    static void loadWifiCredentials();
 };
 
 #endif
