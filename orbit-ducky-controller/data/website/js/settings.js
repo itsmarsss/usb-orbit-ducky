@@ -1,12 +1,37 @@
 function getSettings() {
     fetch('/api/settings')
-        .then(res => res.text())
-        .then(out => title.innerHTML = res)
+        .then(res => res.json())
+        .then(out => setSettings(out))
         .catch(err => {
             console.log('Error querying json');
             alert('Error getting settings... Please reload: ' + err);
             throw err;
         });
+}
+
+function setSettings(data) {
+    ssid_input.value = data.ssid;
+    password_input.value = data.pwd;
+
+    channel_input.value = data.channel;
+    hide_ssid_input.value = data.hidessid;
+    max_connect_input.value = data.maxconnect;
+    ftm_respond_input.value = data.ftmrespond;
+
+    ip_1.value = data.ip1;
+    ip_2.value = data.ip2;
+    ip_3.value = data.ip3;
+    ip_4.value = data.ip4;
+
+    gateway_1.value = data.gateway1;
+    gateway_2.value = data.gateway2;
+    gateway_3.value = data.gateway3;
+    gateway_4.value = data.gateway4;
+
+    subnet_1.value = data.subnet1;
+    subnet_2.value = data.subnet2;
+    subnet_3.value = data.subnet3;
+    subnet_4.value = data.subnet4;
 }
 
 function updateSettings() {
@@ -65,3 +90,5 @@ function shutdownESP() {
             alert('Shutting Down...');
         });
 }
+
+getSettings();
