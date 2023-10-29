@@ -12,6 +12,7 @@ class ODSInterpreter
 {
 public:
     static std::list<byte *> decimalStream;
+    static u_int16_t interval;
     static void interpretLine(String line);
 };
 
