@@ -7,6 +7,7 @@
 
 #include "EventHandlers.h"
 #include "Helpers.h"
+#include "WifiCredentials.h"
 
 class WebServer
 {

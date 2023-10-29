@@ -29,6 +29,9 @@ void setupEndPoints()
   server.on("/css/settings.css", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/website/css/settings.css", String(), false); });
 
+  server.on("/js/tools.js", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/website/js/tools.js", String(), false); });
+
   server.on("/js/index.js", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/website/js/index.js", String(), false); });
 
@@ -127,6 +130,132 @@ void setupEndPoints()
     download.close();
 
     request -> send(response); });
+
+  server.on("/api/update_settings", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+    if (!(request -> hasParam("ssid"))) {
+      request -> send(200, "text/html", "SSID may not be empty.");
+      return;
+    }
+    if (!(request -> hasParam("pwd"))) {
+      request -> send(200, "text/html", "PWD may not be empty.");
+      return;
+    }
+    if (!(request -> hasParam("channel"))) {
+      request -> send(200, "text/html", "Channel may not be empty.");
+      return;
+    }
+    if (!(request -> hasParam("hidessid"))) {
+      request -> send(200, "text/html", "Hidden SSID may not be empty.");
+      return;
+    }
+    if (!(request -> hasParam("maxconnect"))) {
+      request -> send(200, "text/html", "Max Connections may not be empty.");
+      return;
+    }
+    if (!(request -> hasParam("ftmrespond"))) {
+      request -> send(200, "text/html", "FTM Responder may not be empty.");
+      return;
+    }
+    if (!(request -> hasParam("ip1"))) {
+      request -> send(200, "text/html", "IP may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("ip2"))) {
+      request -> send(200, "text/html", "IP may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("ip3"))) {
+      request -> send(200, "text/html", "IP may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("ip4"))) {
+      request -> send(200, "text/html", "IP may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("gateway1"))) {
+      request -> send(200, "text/html", "Gateway may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("gateway2"))) {
+      request -> send(200, "text/html", "Gateway may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("gateway3"))) {
+      request -> send(200, "text/html", "Gateway may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("gateway4"))) {
+      request -> send(200, "text/html", "Gateway may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("subnet1"))) {
+      request -> send(200, "text/html", "Subnet may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("subnet2"))) {
+      request -> send(200, "text/html", "Subnet may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("subnet3"))) {
+      request -> send(200, "text/html", "Subnet may not be incomplete.");
+      return;
+    }
+    if (!(request -> hasParam("subnet4"))) {
+      request -> send(200, "text/html", "Subnet may not be incomplete.");
+      return;
+    }
+
+    String ssid = Helpers::hexToString(request -> getParam("ssid") -> value());
+    String pwd = Helpers::hexToString(request -> getParam("pwd") -> value());
+    
+    uint8_t channel = request -> getParam("channel") -> value().toInt();
+    uint8_t hidessid = request -> getParam("hidessid") -> value().toInt();
+    uint8_t maxconnect = request -> getParam("maxconnect") -> value().toInt();
+    uint8_t ftmrespond = request -> getParam("ftmrespond") -> value().toInt();
+    
+    uint8_t ip1 = request -> getParam("ip1") -> value().toInt();
+    uint8_t ip2 = request -> getParam("ip2") -> value().toInt();
+    uint8_t ip3 = request -> getParam("ip3") -> value().toInt();
+    uint8_t ip4 = request -> getParam("ip4") -> value().toInt();
+    
+    uint8_t gateway1 = request -> getParam("gateway1") -> value().toInt();
+    uint8_t gateway2 = request -> getParam("gateway2") -> value().toInt();
+    uint8_t gateway3 = request -> getParam("gateway3") -> value().toInt();
+    uint8_t gateway4 = request -> getParam("gateway4") -> value().toInt();
+    
+    uint8_t subnet1 = request -> getParam("subnet1") -> value().toInt();
+    uint8_t subnet2 = request -> getParam("subnet2") -> value().toInt();
+    uint8_t subnet3 = request -> getParam("subnet3") -> value().toInt();
+    uint8_t subnet4 = request -> getParam("subnet4") -> value().toInt();
+
+    ssid.toCharArray(WifiCredentials::ssid, 30);
+    pwd.toCharArray(WifiCredentials::password, 15);
+
+    WifiCredentials::channel = channel;
+    WifiCredentials::ssid_hidden = hidessid;
+    WifiCredentials::max_connection = maxconnect;
+    WifiCredentials::ftm_responder = ftmrespond;
+    
+    WifiCredentials::IP = IPAddress(ip1, ip2, ip3, ip4);
+    
+    WifiCredentials::gateway = IPAddress(gateway1, gateway2, gateway3, gateway4);
+    
+    WifiCredentials::subnet = IPAddress(subnet1, subnet2, subnet3, subnet4);
+
+    Serial.println(WifiCredentials::ssid);
+    Serial.println(WifiCredentials::password);
+    
+    Serial.println(WifiCredentials::channel);
+    Serial.println(WifiCredentials::ssid_hidden);
+    Serial.println(WifiCredentials::max_connection);
+    Serial.println(WifiCredentials::ftm_responder);
+    
+    Serial.println(WifiCredentials::IP);
+    Serial.println(WifiCredentials::gateway);
+    Serial.println(WifiCredentials::subnet);
+
+    request -> send(200, "text/html", "200"); });
 
   server.on("/api/restart", HTTP_GET, [](AsyncWebServerRequest *request)
             {

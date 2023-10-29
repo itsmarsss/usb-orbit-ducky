@@ -40,41 +40,41 @@
         <div id="network" class="section">
             <div class="headers">Network</div>
 
-            <div class="row"><b>Channels</b>:&emsp;
-                <select>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
-                    <option>13</option>
+            <div class="row"><b>Channel</b>:&emsp;
+                <select id="channels_input">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
                 </select>
             </div>
             <div class="row"><b>Hide SSID</b>:&emsp;
-                <select>
-                    <option>Yes</option>
-                    <option>No</option>
+                <select id="hide_ssid_input">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                 </select>
             </div>
             <div class="row"><b>Max Connections</b>:&emsp;
-                <select>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
+                <select id="max_connect_input">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
                 </select>
             </div>
             <div class="row"><b>FTM Responder</b>:&emsp;
-                <select>
-                    <option>Yes</option>
-                    <option>No</option>
+                <select id="ftm_respond_input">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                 </select>
             </div>
         </div>
@@ -82,22 +82,22 @@
         <div id="addresses" class="section">
             <div class="headers">Addresses</div>
             <div class="row"><b>IP</b>:&emsp;
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="192">.
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="168">.
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">.
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">
+                <input id="ip_1" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="192">.
+                <input id="ip_2" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="168">.
+                <input id="ip_3" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">.
+                <input id="ip_4" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">
             </div>
             <div class="row"><b>Gateway</b>:&emsp;
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="192">.
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="168">.
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">.
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">
+                <input id="gateway_1" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="192">.
+                <input id="gateway_2" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="168">.
+                <input id="gateway_3" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">.
+                <input id="gateway_4" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="1">
             </div>
             <div class="row"><b>Subnet</b>:&emsp;
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="255">.
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="255">.
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="255">.
-                <input id="ssid_input" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="0">
+                <input id="subnet_1" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="255">.
+                <input id="subnet_2" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="255">.
+                <input id="subnet_3" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="255">.
+                <input id="subnet_4" class="ip_slot" type="number" min="0" max="255" placeholder="255" value="0">
             </div>
 
             <div class="row">
@@ -109,6 +109,7 @@
     </div>
 </body>
 
+<script src="/js/tools.js"></script>
 <script src="/js/settings.js"></script>
 
 </html>
